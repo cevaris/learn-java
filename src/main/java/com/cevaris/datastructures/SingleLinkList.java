@@ -98,7 +98,14 @@ public class SingleLinkList<E> implements List<E> {
 
   @Override
   public boolean addAll(Collection<? extends E> c) {
-    return false;
+    if (c.isEmpty()) {
+      return false;
+    } else {
+      for (E e : c) {
+        add(e);
+      }
+      return true;
+    }
   }
 
   @Override

@@ -1,5 +1,7 @@
 package com.cevaris.datastructures;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -23,11 +25,16 @@ public class SingleLinkListTest {
   @Test
   public void testAddSome() {
     SingleLinkList<Integer> singleElement = new SingleLinkList<>();
-    singleElement.add(1);
-    singleElement.add(2);
-    singleElement.add(3);
-    Object[] expected = {1, 2, 3};
-    Assert.assertArrayEquals(expected, singleElement.toArray());
+    List<Integer> expected = Arrays.asList(0, 1, 2);
+    singleElement.addAll(expected);
+    Assert.assertArrayEquals(expected.toArray(), singleElement.toArray());
+  }
+
+  @Test
+  public void testAddAllWhenEmpty() {
+    SingleLinkList<Integer> singleElement = new SingleLinkList<>();
+    singleElement.addAll(new ArrayList<>());
+    Assert.assertArrayEquals(new Object[0], singleElement.toArray());
   }
 
 }
