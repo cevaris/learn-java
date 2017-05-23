@@ -13,12 +13,12 @@ public class CircularLinkList<E> implements List<E> {
     E value;
     Node<E> next;
 
-    public Node(E value, Node next) {
+    Node(E value, Node<E> next) {
       this.value = value;
       this.next = next;
     }
 
-    public Node(E value) {
+    Node(E value) {
       this.value = value;
     }
   }
