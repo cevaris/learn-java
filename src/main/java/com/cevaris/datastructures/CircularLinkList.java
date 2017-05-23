@@ -64,12 +64,10 @@ public class CircularLinkList<E> implements List<E> {
       return obj;
     }
 
-    int i = 0;
-    obj[i] = head.value;
+    obj[0] = head.value;
 
     Node<E> curr = head.next;
-    while(curr != head){
-      i++;
+    for(int i = 1; curr != head; i++){
       obj[i] = curr.value;
       curr = curr.next;
     }
