@@ -52,7 +52,21 @@ public class CircularLinkList<E> implements List<E> {
 
   @Override
   public Iterator<E> iterator() {
-    return null;
+    return new Iterator<E>() {
+      Node<E> pos = head;
+
+      @Override
+      public boolean hasNext() {
+        return pos.next == head;
+      }
+
+      @Override
+      public E next() {
+        Node<E> curr = pos;
+        pos = pos.next;
+        return curr.value;
+      }
+    };
   }
 
   @Override

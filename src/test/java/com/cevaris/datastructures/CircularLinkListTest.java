@@ -1,6 +1,7 @@
 package com.cevaris.datastructures;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Assert;
@@ -45,6 +46,17 @@ public class CircularLinkListTest {
     Assert.assertFalse(ls.isEmpty());
     Assert.assertEquals(4, ls.size());
     Assert.assertArrayEquals(new Object[]{"a", "b", "c", "d"}, ls.toArray());
+  }
+
+  @Test
+  public void testIterator() {
+    CircularLinkList<String> ls = new CircularLinkList<>();
+    List<String> expected = Arrays.asList("alpha", "beta", "gamma", "delta");
+    ls.addAll(expected);
+    Iterator<String> iter = ls.iterator();
+    for (String s : expected) {
+      Assert.assertEquals(s, iter.next());
+    }
   }
 
   @Test
