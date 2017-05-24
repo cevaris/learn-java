@@ -99,6 +99,43 @@ public class CircularLinkList<E> implements List<E> {
 
   @Override
   public boolean remove(Object o) {
+    //0
+    if (head == null)
+      return false;
+
+    //1
+    if (head.next == head && head.value.equals(o)) {
+      head = null;
+      return true;
+    }
+
+    //N
+    Node<E> prev = head;
+    Node<E> curr = head.next;
+
+    while (curr != head) {
+      if (curr.value.equals(o)) {
+        if (curr.next == head) {
+          prev.next = head;
+          return true;
+        }
+
+        prev.next = curr.next;
+        return true;
+      }
+
+      prev = curr;
+      curr = curr.next;
+    }
+
+    if (head.value.equals(o)) {
+      //prev is last node
+      Node<E> newHead = head.next;
+      head = newHead;
+      prev.next = newHead;
+      return true;
+    }
+
     return false;
   }
 
@@ -109,7 +146,13 @@ public class CircularLinkList<E> implements List<E> {
 
   @Override
   public boolean addAll(Collection<? extends E> c) {
-    return false;
+    if (c.isEmpty())
+      return false;
+
+    for (E s : c) {
+      add(s);
+    }
+    return true;
   }
 
   @Override
