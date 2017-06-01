@@ -1,48 +1,49 @@
 package com.cevaris.datastructures;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 public class UnrolledLinkList<E> implements List<E> {
 
-  private Node head;
+  private Block head;
   private final int bucketSize;
 
-  private class Node {
-    CircularLinkList<E> ls;
-    Node next;
+  private class Block {
+    List<E> ls;
+    Block next;
 
-    Node(CircularLinkList<E> ls, Node next) {
+    Block(List<E> ls, Block next) {
       this.ls = ls;
       this.next = next;
     }
-  }
 
-  public UnrolledLinkList() {
-    this(9);
-  }
-
-  public UnrolledLinkList(int maxSize) {
-    bucketSize = (int) Math.sqrt(maxSize);
-    head = new Node(new CircularLinkList<>(), null);
-
-    Node curr = head;
-    for (int i = 0; i < bucketSize; i++) {
-      curr.next = new Node(new CircularLinkList<>(), null);
-      curr = curr.next;
+    public int size() {
+      return ls.size();
     }
+  }
+
+
+  public UnrolledLinkList(int bucketSize) {
+    this.bucketSize = bucketSize;
   }
 
   @Override
   public int size() {
-    return 0;
+    int size = 0;
+    Iterator<E> iter = iterator();
+    for (; iter.hasNext(); iter.next()) {
+      size++;
+    }
+    return size;
   }
 
   @Override
   public boolean isEmpty() {
-    return false;
+    return head == null;
   }
 
   @Override
@@ -52,12 +53,54 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public Iterator<E> iterator() {
-    return null;
+    return new Iterator<E>() {
+      Block currBlock = head;
+      Iterator<E> currBlockIter = assignIter();
+
+      @Override
+      public boolean hasNext() {
+        if (currBlock == null) {
+          return false;
+        }
+
+        return currBlockIter.hasNext() || currBlock.next != null;
+      }
+
+      @Override
+      public E next() {
+        if (currBlock == null) {
+          throw new NoSuchElementException();
+        }
+        if (currBlockIter == null) {
+          currBlockIter = currBlock.ls.iterator();
+        }
+        if (currBlockIter.hasNext()) {
+          return currBlockIter.next();
+        } else {
+          currBlockIter = null;
+          currBlock = currBlock.next;
+          return next();
+        }
+      }
+
+      private Iterator<E> assignIter() {
+        if (currBlock != null) {
+          return currBlock.ls.iterator();
+        } else {
+          return null;
+        }
+      }
+    };
   }
 
   @Override
   public Object[] toArray() {
-    return new Object[0];
+    Object[] obj = new Object[size()];
+    Iterator<E> iter = iterator();
+    for (int i = 0; iter.hasNext(); i++) {
+      obj[i] = iter.next();
+    }
+    return obj;
   }
 
   @Override
@@ -67,7 +110,24 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public boolean add(E e) {
-    return false;
+    if (head == null) {
+      head = new Block(new ArrayList<>(bucketSize), null);
+      head.ls.add(e);
+      return true;
+    }
+
+    Block currBlock = head;
+    while (currBlock.next != null) {
+      currBlock = currBlock.next;
+    }
+
+    if (currBlock.size() == bucketSize) {
+      currBlock.next = new Block(new ArrayList<>(bucketSize), null);
+      currBlock.next.ls.add(e);
+    } else {
+      currBlock.ls.add(e);
+    }
+    return true;
   }
 
   @Override
@@ -82,7 +142,13 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public boolean addAll(Collection<? extends E> c) {
-    return false;
+    if (c.isEmpty())
+      return false;
+
+    for (E s : c) {
+      add(s);
+    }
+    return true;
   }
 
   @Override
