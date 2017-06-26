@@ -1,11 +1,10 @@
 package com.cevaris.concurrency;
 
 import java.rmi.RemoteException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
 
 import com.cevaris.RmiTest;
+import com.cevaris.test.utils.TestPool;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class ServerWithHitCounterTest extends RmiTest<ServerWithHitCounterIface>
     return server;
   }
 
-  class Worker implements Runnable {
+  class Worker implements Runnable, Callable<Runnable> {
 
     final private ServerWithHitCounterIface client;
 
@@ -40,16 +39,17 @@ public class ServerWithHitCounterTest extends RmiTest<ServerWithHitCounterIface>
         e.printStackTrace();
       }
     }
+
+    @Override
+    public Runnable call() throws Exception {
+      return new Worker(client);
+    }
   }
 
   @Test
   public void testConcurrentHitCount() throws Exception {
-    ExecutorService pool = Executors.newFixedThreadPool(10);
-    Long expectedCount = 100L;
-    for (int i = 0; i < expectedCount; i++) {
-      pool.execute(new Worker(client));
-    }
-    pool.awaitTermination(1, TimeUnit.SECONDS);
-    Assert.assertEquals(expectedCount, server.getHitCount());
+    int expectedCount = 1000;
+    TestPool.executedFixedThreads(new Worker(client), expectedCount);
+    Assert.assertEquals(Long.valueOf(expectedCount), server.getHitCount());
   }
 }
