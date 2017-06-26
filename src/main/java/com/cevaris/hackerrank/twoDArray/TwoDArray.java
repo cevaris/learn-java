@@ -83,20 +83,7 @@ public class TwoDArray {
   private static final int R = 6;
   private static final int C = 6;
 
-  private int maxSum = 0;
-
-  public static void main(String[] args) {
-    TwoDArray instance = new TwoDArray();
-    Scanner in = new Scanner(System.in);
-    int arr[][] = new int[R][C];
-    for (int ri = 0; ri < R; ri++) {
-      for (int ci = 0; ci < C; ci++) {
-        arr[ri][ci] = in.nextInt();
-      }
-    }
-    int result = instance.solution(arr);
-    System.out.println(result);
-  }
+  private int maxSum = SENTINEL;
 
   private int solution(int[][] arr) {
     for (int ri = 0; ri < R; ri++) {
@@ -133,6 +120,19 @@ public class TwoDArray {
     }
 
     return sum;
+  }
+
+  public static void main(String[] args) {
+    TwoDArray instance = new TwoDArray();
+    Scanner in = new Scanner(System.in);
+    int arr[][] = new int[R][C];
+    for (int ri = 0; ri < R; ri++) {
+      for (int ci = 0; ci < C; ci++) {
+        arr[ri][ci] = in.nextInt();
+      }
+    }
+    int result = instance.solution(arr);
+    System.out.println(result);
   }
 
 }
