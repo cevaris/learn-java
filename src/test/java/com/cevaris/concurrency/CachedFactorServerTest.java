@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.cevaris.RmiTest;
+import com.cevaris.test.utils.RmiTest;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.cevaris.concurrency;
 
-import com.cevaris.RmiTest;
+import com.cevaris.test.utils.RmiTest;
 
 import org.junit.Assert;
 import org.junit.Test;

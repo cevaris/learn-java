@@ -1,4 +1,4 @@
-package com.cevaris;
+package com.cevaris.test.utils;
 
 import java.io.IOException;
 import java.net.ServerSocket;

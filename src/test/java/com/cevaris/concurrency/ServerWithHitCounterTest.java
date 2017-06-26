@@ -3,7 +3,7 @@ package com.cevaris.concurrency;
 import java.rmi.RemoteException;
 import java.util.concurrent.Callable;
 
-import com.cevaris.RmiTest;
+import com.cevaris.test.utils.RmiTest;
 import com.cevaris.test.utils.TestPool;
 
 import org.junit.Assert;
