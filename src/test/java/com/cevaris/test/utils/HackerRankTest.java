@@ -37,7 +37,7 @@ public abstract class HackerRankTest {
       TextFromStandardInputStream.emptyStandardInputStream();
 
   protected void assertOutput(String expected) {
-    Assert.assertEquals(expected, baos.toString().trim());
+    Assert.assertEquals(expected.trim(), baos.toString().trim());
   }
 
 }
