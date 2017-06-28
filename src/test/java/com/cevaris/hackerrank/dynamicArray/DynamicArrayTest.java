@@ -4,7 +4,7 @@ import com.cevaris.test.utils.HackerRankTest;
 
 import org.junit.Test;
 
-public class SolutionTest extends HackerRankTest {
+public class DynamicArrayTest extends HackerRankTest {
 
   String case0 = String.join("\n",
       "2 5",
@@ -18,7 +18,7 @@ public class SolutionTest extends HackerRankTest {
   @Test
   public void testCase0() {
     systemInMock.provideLines(case0);
-    Solution.main(new String[0]);
+    DynamicArray.main(new String[0]);
     assertOutput("7\n3");
   }
 

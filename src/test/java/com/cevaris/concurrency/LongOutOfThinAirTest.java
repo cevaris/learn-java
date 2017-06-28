@@ -1,8 +1,7 @@
 package com.cevaris.concurrency;
 
-import java.util.concurrent.Callable;
-
 import com.cevaris.test.utils.TestPool;
+import com.cevaris.test.utils.TestWorker;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class LongOutOfThinAirTest {
     }
   }
 
-  class Worker implements Runnable, Callable<Runnable> {
+  class Worker extends TestWorker {
 
     final private UnsafeLong unsafeLong;
 
@@ -35,7 +34,7 @@ public class LongOutOfThinAirTest {
     }
 
     @Override
-    public Runnable call() throws Exception {
+    public TestWorker call() throws Exception {
       return new Worker(unsafeLong);
     }
   }

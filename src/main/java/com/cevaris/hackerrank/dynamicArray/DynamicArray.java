@@ -7,10 +7,10 @@ import java.util.Scanner;
 /**
  * https://www.hackerrank.com/challenges/dynamic-array
  */
-public class Solution {
+public class DynamicArray {
   private final List[] seqs;
 
-  private Solution(int N) {
+  private DynamicArray(int N) {
     this.seqs = new List[N];
 
     for (int n = 0; n < N; n++) {
@@ -60,7 +60,7 @@ public class Solution {
       queries[q][2] = in.nextInt();
     }
 
-    Solution instance = new Solution(N);
+    DynamicArray instance = new DynamicArray(N);
     String result = instance.solution(queries);
     System.out.println(result);
   }

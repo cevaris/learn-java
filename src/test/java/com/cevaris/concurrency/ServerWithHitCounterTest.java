@@ -1,10 +1,10 @@
 package com.cevaris.concurrency;
 
 import java.rmi.RemoteException;
-import java.util.concurrent.Callable;
 
 import com.cevaris.test.utils.RmiTest;
 import com.cevaris.test.utils.TestPool;
+import com.cevaris.test.utils.TestWorker;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class ServerWithHitCounterTest extends RmiTest<ServerWithHitCounterIface>
     return server;
   }
 
-  class Worker implements Runnable, Callable<Runnable> {
+  class Worker extends TestWorker {
 
     final private ServerWithHitCounterIface client;
 
@@ -41,7 +41,7 @@ public class ServerWithHitCounterTest extends RmiTest<ServerWithHitCounterIface>
     }
 
     @Override
-    public Runnable call() throws Exception {
+    public TestWorker call() throws Exception {
       return new Worker(client);
     }
   }
