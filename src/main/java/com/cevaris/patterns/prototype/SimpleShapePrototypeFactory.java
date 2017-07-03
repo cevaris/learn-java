@@ -5,11 +5,23 @@ import java.util.Objects;
 abstract class Shape {
 }
 
-class Quadrilateral extends Shape {
-  int top;
-  int bottom;
-  int left;
-  int right;
+abstract class Quadrilateral extends Shape implements Cloneable {
+  protected int top;
+  protected int bottom;
+  protected int left;
+  protected int right;
+
+  public Quadrilateral(int top, int bottom, int left, int right) {
+    this.top = top;
+    this.bottom = bottom;
+    this.left = left;
+    this.right = right;
+  }
+
+  @Override
+  protected Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
 
   @Override
   public int hashCode() {
@@ -30,63 +42,45 @@ class Quadrilateral extends Shape {
         && Objects.equals(this.left, other.left)
         && Objects.equals(this.right, other.right);
   }
+
+  void init(int top, int bottom, int left, int right) {
+    this.top = top;
+    this.bottom = bottom;
+    this.left = left;
+    this.right = right;
+  }
+
 }
 
-class Square extends Quadrilateral {
+class Square extends Quadrilateral implements Cloneable {
   Square(int len) {
-    top = len;
-    bottom = len;
-    left = len;
-    right = len;
+    super(len, len, len, len);
   }
-
-  static Square copy(Square x) {
-    return new Square(x.top);
-  }
-
-  void initialize(int len) {
-    top = len;
-    bottom = len;
-    left = len;
-    right = len;
-  }
-
 }
 
 class Trapezoid extends Quadrilateral {
   Trapezoid(int top, int bottom, int left, int right) {
-    super.top = top;
-    super.bottom = bottom;
-    super.left = left;
-    super.right = right;
-  }
-
-  static Trapezoid copy(Trapezoid x) {
-    return new Trapezoid(x.top, x.bottom, x.left, x.right);
+    super(top, bottom, left, right);
   }
 }
 
-class Circle extends Shape {
-  private int radius;
+abstract class Circle extends Shape implements Cloneable {
+  int vRadus;
+  int hRadius;
 
-  Circle() {
+  public Circle(int vRadus, int hRadius) {
+    this.vRadus = vRadus;
+    this.hRadius = hRadius;
   }
 
-  Circle(int radius) {
-    this.radius = radius;
-  }
-
-  static Circle copy(Circle x) {
-    return new Circle(x.radius);
-  }
-
-  void initialize(int radius) {
-    this.radius = radius;
+  @Override
+  protected Object clone() throws CloneNotSupportedException {
+    return super.clone();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(radius);
+    return Objects.hash(vRadus, hRadius);
   }
 
   @Override
@@ -98,129 +92,81 @@ class Circle extends Shape {
       return false;
     }
     final Circle other = (Circle) obj;
-    return Objects.equals(this.radius, other.radius);
+    return Objects.equals(this.vRadus, other.vRadus)
+        && Objects.equals(this.hRadius, other.hRadius);
+  }
+
+  void init(int vRadus, int hRadius) {
+    this.vRadus = vRadus;
+    this.hRadius = hRadius;
   }
 }
 
 class Ellipse extends Circle {
-  private int height;
-  private int width;
-
-  Ellipse(int height, int width) {
-    this.height = height;
-    this.width = width;
-  }
-
-  static Ellipse copy(Ellipse x) {
-    return new Ellipse(x.height, x.width);
-  }
-
-  @Override
-  public int hashCode() {
-    return 31 * super.hashCode() + Objects.hash(height, width);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    final Ellipse other = (Ellipse) obj;
-    return Objects.equals(this.height, other.height)
-        && Objects.equals(this.width, other.width);
+  Ellipse(int verticalRadius, int horizontalRadius) {
+    super(verticalRadius, horizontalRadius);
   }
 }
 
-abstract class ShapePrototypeFactory {
-  abstract Circle createCircle();
+interface ShapePrototypeFactory {
+  Circle createCircle();
 
-  abstract Quadrilateral createQuadrilateral();
+  Quadrilateral createQuadrilateral();
 }
 
-abstract class MutableShapePrototypeFactory extends ShapePrototypeFactory {
-  abstract Circle createCircle(int radius);
+interface MutableShapePrototypeFactory extends ShapePrototypeFactory {
+  Circle createCircle(int vRadius, int hRadius);
 
-  abstract Quadrilateral createQuadrilateral(int len);
+  Quadrilateral createQuadrilateral(int top, int bottom, int left, int right);
 }
 
-class SimpleShapePrototypeFactory extends ShapePrototypeFactory {
+class SimpleShapePrototypeFactory implements ShapePrototypeFactory {
   private final Circle circle;
-  private final Square square;
+  private final Quadrilateral quad;
 
-  SimpleShapePrototypeFactory(Circle circle, Square square) {
+  SimpleShapePrototypeFactory(Circle circle, Quadrilateral quad) {
     this.circle = circle;
-    this.square = square;
+    this.quad = quad;
   }
 
   @Override
-  Circle createCircle() {
-    return Circle.copy(circle);
+  public Circle createCircle() {
+    try {
+      return (Circle) circle.clone();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override
-  Quadrilateral createQuadrilateral() {
-    return Square.copy(square);
+  public Quadrilateral createQuadrilateral() {
+    try {
+      return (Quadrilateral) quad.clone();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }
 
+class SimpleMutableShapePrototypeFactory extends SimpleShapePrototypeFactory implements MutableShapePrototypeFactory {
 
-class ExoticShapePrototypeFactory extends ShapePrototypeFactory {
-  private final Ellipse ellipse;
-  private final Trapezoid trapezoid;
-
-  ExoticShapePrototypeFactory(Ellipse ellipse, Trapezoid trapezoid) {
-    this.ellipse = ellipse;
-    this.trapezoid = trapezoid;
+  SimpleMutableShapePrototypeFactory(Circle circle, Quadrilateral quad) {
+    super(circle, quad);
   }
 
   @Override
-  Circle createCircle() {
-    return Ellipse.copy(ellipse);
-  }
-
-  @Override
-  Quadrilateral createQuadrilateral() {
-    return Trapezoid.copy(trapezoid);
-  }
-}
-
-class SimpleMutableShapePrototypeFactory extends MutableShapePrototypeFactory {
-  private final Circle circle;
-  private final Square square;
-
-  SimpleMutableShapePrototypeFactory(Circle circle, Square square) {
-    this.circle = circle;
-    this.square = square;
-  }
-
-  @Override
-  Circle createCircle() {
-    return Circle.copy(circle);
-  }
-
-  @Override
-  Quadrilateral createQuadrilateral() {
-    return Square.copy(square);
-  }
-
-  @Override
-  Circle createCircle(int radius) {
+  public Circle createCircle(int vRadius, int hRadius) {
     Circle x = createCircle();
-    x.initialize(radius);
+    x.init(vRadius, hRadius);
     return x;
   }
 
   @Override
-  Quadrilateral createQuadrilateral(int len) {
-    Square x = (Square) createQuadrilateral();
-    x.initialize(len);
+  public Quadrilateral createQuadrilateral(int top, int bottom, int left, int right) {
+    Quadrilateral x = createQuadrilateral();
+    x.init(top, bottom, left, right);
     return x;
-
   }
 }
