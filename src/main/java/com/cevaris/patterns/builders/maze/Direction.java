@@ -1,5 +1,5 @@
 package com.cevaris.patterns.builders.maze;
 
-public enum Direction {
+enum Direction {
   NORTH, EAST, SOUTH, WEST
 }

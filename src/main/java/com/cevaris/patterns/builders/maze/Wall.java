@@ -3,7 +3,7 @@ package com.cevaris.patterns.builders.maze;
 
 import java.util.Objects;
 
-public class Wall implements MapSite {
+class Wall implements MapSite {
   private Object object;
 
   @Override

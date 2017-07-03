@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class Room implements MapSite {
+class Room implements MapSite {
 
   private final MapSite[] sides = new MapSite[4];
 

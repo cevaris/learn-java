@@ -2,7 +2,7 @@ package com.cevaris.patterns.builders.maze;
 
 import java.util.Objects;
 
-public class Door implements MapSite {
+class Door implements MapSite {
   private final int fromRoomNumber;
   private final int toRoomNumber;
   private boolean isOpen;
