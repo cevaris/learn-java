@@ -1,4 +1,4 @@
-package com.cevaris.patterns.builders.maze;
+package com.cevaris.patterns.builders;
 
 import java.util.Objects;
 

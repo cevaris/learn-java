@@ -1,4 +1,4 @@
-package com.cevaris.patterns.builders.maze;
+package com.cevaris.patterns.builders;
 
 import org.junit.Assert;
 import org.junit.Test;

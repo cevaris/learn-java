@@ -1,4 +1,4 @@
-package com.cevaris.patterns.builders.maze;
+package com.cevaris.patterns.builders;
 
 enum Direction {
   NORTH, EAST, SOUTH, WEST
