@@ -53,16 +53,4 @@ public class ComputerTest {
     Assert.assertEquals((long) computer.submit(10), 100L);
     Assert.assertEquals((long) computer.submit(20), 400L);
   }
-
-  @Test
-  public void testBatchComputeSquared() throws Exception {
-    int batchSize = 2;
-    Computer<Integer, Long> computer = new BarrierBatchComputer<>(
-        new ComputeSquared(), batchSize
-    );
-
-    int N = 2 * batchSize; // needs to be divisable by batchSize, else will hang
-    ExecutorService testPool = TestPool.executedFixedThreadsBlock(new Worker(computer), N);
-    testPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-  }
 }
