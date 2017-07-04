@@ -18,7 +18,7 @@ public class MemorizerTest {
     String actual = cache.compute(value);
 
     int N = 100;
-    TestPool.executedFixedThreads(new SingleKeyWorker(value, cache), 10, N);
+    TestPool.executedFixedThreads(new SingleKeyWorker(value, cache), N);
 
     Assert.assertEquals(1, cache.size());
     Assert.assertEquals((long) N, cache.getCacheHits());
@@ -33,8 +33,8 @@ public class MemorizerTest {
     Memorizer<Long, String> cache = new Memorizer<>(func);
 
     int N = 100;
-    TestPool.executedFixedThreads(new MultiKeyWorker(value, cache), 10, N);
-    TestPool.executedFixedThreads(new MultiKeyWorker(value, cache), 10, N);
+    TestPool.executedFixedThreads(new MultiKeyWorker(value, cache), N);
+    TestPool.executedFixedThreads(new MultiKeyWorker(value, cache), N);
 
     Assert.assertEquals(N, cache.size());
     Assert.assertEquals(N, cache.getCacheHits());

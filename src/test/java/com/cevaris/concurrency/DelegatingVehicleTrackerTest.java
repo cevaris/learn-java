@@ -64,8 +64,8 @@ public class DelegatingVehicleTrackerTest {
   @Test
   public void testConcurrentReadWrite() throws Exception {
     VehicleTracker tracker = new DelegatingVehicleTracker();
-    TestPool.executedFixedThreads(new Writer(tracker), 100, 200);
-    TestPool.executedFixedThreads(new Reader(tracker), 100, 200);
+    TestPool.executedFixedThreads(new Writer(tracker), 200);
+    TestPool.executedFixedThreads(new Reader(tracker), 200);
   }
 
 }

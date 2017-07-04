@@ -44,7 +44,7 @@ public class LongOutOfThinAirTest {
     UnsafeLong unsafeLong = new UnsafeLong();
 
     int N = 10000;
-    TestPool.executedFixedThreads(new Worker(unsafeLong), 100, N);
+    TestPool.executedFixedThreads(new Worker(unsafeLong), N);
 
     // this should aways pass on 64-bit machines that guarantee atomic 64-bit operations
     Assert.assertTrue(unsafeLong.get() > 0 && unsafeLong.get() <= N);
