@@ -4,10 +4,7 @@ package com.cevaris.patterns.bridge;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
@@ -43,7 +40,7 @@ abstract class Computer<I, O> {
   abstract O submit(I i);
 }
 
-// Redefined Abstraction (1/3)
+// Redefined Abstraction (1/2)
 class FutureComputer<I, O> extends Computer<I, O> {
   private final ConcurrentMap<I, Future<O>> futures = new ConcurrentHashMap<>();
 
@@ -79,7 +76,7 @@ class FutureComputer<I, O> extends Computer<I, O> {
   }
 }
 
-// Redefined Abstraction (2/3)
+// Redefined Abstraction (2/2)
 class SyncComputer<I, O> extends Computer<I, O> {
   SyncComputer(Compute<I, O> func) {
     super(func);
@@ -88,56 +85,5 @@ class SyncComputer<I, O> extends Computer<I, O> {
   @Override
   O submit(I i) {
     return func.compute(i);
-  }
-}
-
-// Redefined Abstraction (3/3)
-class LatchBatchComputer<I, O> extends Computer<I, O> {
-
-  private final ConcurrentMap<I, O> results = new ConcurrentHashMap<>();
-
-  private final int numOfThreads;
-  private final ExecutorService pool;
-  private CountDownLatch latch;
-
-  LatchBatchComputer(Compute<I, O> func, int numOfThreads) {
-    super(func);
-    this.numOfThreads = numOfThreads;
-    this.pool = Executors.newFixedThreadPool(numOfThreads);
-
-    newLatch();
-  }
-
-  @Override
-  O submit(I i) {
-    pool.submit(new Worker(i));
-    try {
-      latch.await();
-      newLatch();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-
-    O o = results.get(i);
-    results.remove(i);
-    return o;
-  }
-
-  class Worker implements Runnable {
-    private final I i;
-
-    Worker(I i) {
-      this.i = i;
-    }
-
-    @Override
-    public void run() {
-      results.putIfAbsent(i, func.compute(i));
-      latch.countDown();
-    }
-  }
-
-  private void newLatch() {
-    latch = new CountDownLatch(numOfThreads);
   }
 }

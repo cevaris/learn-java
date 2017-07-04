@@ -1,5 +1,8 @@
 package com.cevaris.patterns.bridge;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.cevaris.test.utils.TestPool;
 import com.cevaris.test.utils.TestWorker;
 
@@ -18,7 +21,8 @@ public class ComputerTest {
 
     @Override
     public void run() {
-      computer.submit(getIteration());
+      Long result = computer.submit(getIteration());
+      System.out.println(result);
     }
 
     @Override
@@ -51,13 +55,14 @@ public class ComputerTest {
   }
 
   @Test
-  public void testBatchComputeDouble() throws Exception {
+  public void testBatchComputeSquared() throws Exception {
     int batchSize = 2;
-    Computer<Integer, Long> computer = new LatchBatchComputer<>(
+    Computer<Integer, Long> computer = new BarrierBatchComputer<>(
         new ComputeSquared(), batchSize
     );
 
-    int N = 10 * batchSize; // needs to be divisable by batchSize, else will hang
-    TestPool.executedFixedThreads(new Worker(computer), N);
+    int N = 2 * batchSize; // needs to be divisable by batchSize, else will hang
+    ExecutorService testPool = TestPool.executedFixedThreadsBlock(new Worker(computer), N);
+    testPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
   }
 }
