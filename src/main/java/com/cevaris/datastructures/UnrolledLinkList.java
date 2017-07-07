@@ -13,11 +13,10 @@ public class UnrolledLinkList<E> implements List<E> {
   private final int bucketSize;
   private final LinkedList<Block> blocks;
 
-
   private int size;
 
   private class Block {
-    final List<E> arr;
+    private final List<E> arr;
 
     Block(List<E> arr) {
       this.arr = arr;
@@ -32,6 +31,7 @@ public class UnrolledLinkList<E> implements List<E> {
     }
 
     public boolean add(E e) {
+      size++;
       return arr.add(e);
     }
 
@@ -39,10 +39,15 @@ public class UnrolledLinkList<E> implements List<E> {
       arr.add(index, e);
     }
 
+    public E get(int index) {
+      return arr.get(index);
+    }
+
     public E popLast() {
       if (arr.isEmpty()) {
         throw new NoSuchElementException("no elements to pop");
       }
+      size--;
       return arr.remove(size() - 1);
     }
   }
@@ -129,7 +134,6 @@ public class UnrolledLinkList<E> implements List<E> {
       blocks.add(last);
     }
 
-    size++;
     return last.add(e);
   }
 
@@ -176,7 +180,25 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public E get(int index) {
-    return null;
+    if (index >= size()) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
+
+    int currIndex = index;
+    Iterator<Block> blocksIter = blocks.iterator();
+    Block currBlock;
+    while (blocksIter.hasNext()) {
+      currBlock = blocksIter.next();
+
+      int targetIndex = currIndex - currBlock.size();
+      if (targetIndex < 0) {
+        return currBlock.get(currIndex);
+      }
+
+      currIndex -= currBlock.size();
+    }
+
+    return null; // should never get here...
   }
 
   @Override
@@ -199,16 +221,17 @@ public class UnrolledLinkList<E> implements List<E> {
       // adding to end of list
       if ((currIndex - currBlock.size()) == 0 && !blocksIter.hasNext()) {
         Block last = newBlock();
-        last.add(element);
         blocks.add(last);
+
+        last.add(element);
         break;
       }
 
       // adding to existing block
-      if ((currIndex - currBlock.size()) < 0) {
+      if ((currIndex - currBlock.size()) <= 0) {
         currBlock.add(currIndex, element);
 
-        if (currBlock.size() >= bucketSize) {
+        if (currBlock.size() > bucketSize) {
           E elementToShift = currBlock.popLast();
           prependAndShift(blocksIter, elementToShift);
         }
@@ -230,7 +253,7 @@ public class UnrolledLinkList<E> implements List<E> {
     Block currBlock = blocksIter.next();
     currBlock.add(0, element);
 
-    if (currBlock.size() >= bucketSize) {
+    if (currBlock.size() > bucketSize) {
       // no space here, lets
       E elementToShift = currBlock.popLast();
       prependAndShift(blocksIter, elementToShift);

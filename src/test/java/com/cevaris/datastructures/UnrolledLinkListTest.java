@@ -30,7 +30,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddMany() {
     List<String> ls = new UnrolledLinkList<>(9);
-    List<String> expected = Arrays.asList("one", "two", "three", "four");
+    List<String> expected = newList("one", "two", "three", "four");
     Assert.assertTrue(ls.addAll(expected));
 
     Assert.assertFalse(ls.isEmpty());
@@ -41,7 +41,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddAtHead0Index() {
     List<Integer> ls = new UnrolledLinkList<>(9);
-    List<Integer> expected = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8));
+    List<Integer> expected = newList(1, 2, 3, 4, 5, 6, 7, 8);
     Assert.assertTrue(ls.addAll(expected));
     ls.add(0, 0);
     expected.add(0, 0);
@@ -54,7 +54,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddAtMid0Index() {
     List<Integer> ls = new UnrolledLinkList<>(9);
-    List<Integer> expected = new ArrayList<>(Arrays.asList(0, 1, 2, 4, 5, 6, 7, 8));
+    List<Integer> expected = newList(0, 1, 2, 4, 5, 6, 7, 8);
     Assert.assertTrue(ls.addAll(expected));
     ls.add(3, 3);
     expected.add(3, 3);
@@ -67,7 +67,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddAtMid1Index() {
     List<Integer> ls = new UnrolledLinkList<>(9);
-    List<Integer> expected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 5, 6, 7, 8));
+    List<Integer> expected = newList(0, 1, 2, 3, 5, 6, 7, 8);
     Assert.assertTrue(ls.addAll(expected));
     ls.add(4, 4);
     expected.add(4, 4);
@@ -80,7 +80,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddAtMid2Index() {
     List<Integer> ls = new UnrolledLinkList<>(9);
-    List<Integer> expected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 6, 7, 8));
+    List<Integer> expected = newList(0, 1, 2, 3, 4, 6, 7, 8);
     Assert.assertTrue(ls.addAll(expected));
     ls.add(5, 5);
     expected.add(5, 5);
@@ -93,7 +93,7 @@ public class UnrolledLinkListTest {
   @Test
   public void testAddATailIndex() {
     List<Integer> ls = new UnrolledLinkList<>(9);
-    List<Integer> expected = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7));
+    List<Integer> expected = newList(0, 1, 2, 3, 4, 5, 6, 7);
     Assert.assertTrue(ls.addAll(expected));
     ls.add(8, 8);
     expected.add(8, 8);
@@ -101,5 +101,21 @@ public class UnrolledLinkListTest {
     Assert.assertFalse(ls.isEmpty());
     Assert.assertEquals(expected.size(), ls.size());
     Assert.assertArrayEquals(expected.toArray(), ls.toArray());
+  }
+
+  @Test
+  public void testGetIndex() {
+    List<Integer> ls = new UnrolledLinkList<>(9);
+    List<Integer> expected = newList(0, 1, 2, 3, 4, 5, 6, 7, 8);
+    Assert.assertTrue(ls.addAll(expected));
+
+    for (Integer i : expected) {
+      Assert.assertEquals(expected.get(i), i);
+    }
+  }
+
+  @SafeVarargs
+  private final <E> List<E> newList(E... collection) {
+    return new ArrayList<E>(Arrays.asList(collection));
   }
 }
