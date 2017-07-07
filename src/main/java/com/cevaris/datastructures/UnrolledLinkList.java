@@ -3,32 +3,61 @@ package com.cevaris.datastructures;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 public class UnrolledLinkList<E> implements List<E> {
 
-  private Block head;
   private final int bucketSize;
+  private final LinkedList<Block> blocks;
+
+
+  private int size;
 
   private class Block {
-    List<E> ls;
-    Block next;
+    final List<E> arr;
 
-    Block(List<E> ls, Block next) {
-      this.ls = ls;
-      this.next = next;
+    Block(List<E> arr) {
+      this.arr = arr;
     }
 
     public int size() {
-      return ls.size();
+      return arr.size();
+    }
+
+    public Iterator<E> iterator() {
+      return arr.iterator();
+    }
+
+    public boolean add(E e) {
+      return arr.add(e);
+    }
+
+    public void add(int index, E e) {
+      arr.add(index, e);
+    }
+
+    public E popLast() {
+      if (arr.isEmpty()) {
+        throw new NoSuchElementException("no elements to pop");
+      }
+      return arr.remove(size() - 1);
     }
   }
 
+  public UnrolledLinkList(int initialCapacity) {
+    if (initialCapacity < 1) {
+      throw new IllegalArgumentException("initialCapacity must be > 2");
+    }
 
-  public UnrolledLinkList(int bucketSize) {
-    this.bucketSize = bucketSize;
+    this.bucketSize = (int) Math.sqrt(initialCapacity);
+    this.blocks = new LinkedList<>();
+  }
+
+  private Block newBlock() {
+    return new Block(new ArrayList<>(bucketSize));
   }
 
   @Override
@@ -43,7 +72,7 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public boolean isEmpty() {
-    return head == null;
+    return size() == 0;
   }
 
   @Override
@@ -54,41 +83,21 @@ public class UnrolledLinkList<E> implements List<E> {
   @Override
   public Iterator<E> iterator() {
     return new Iterator<E>() {
-      Block currBlock = head;
-      Iterator<E> currBlockIter = assignIter();
+
+      private Iterator<Block> blockIter = blocks.iterator();
+      private Iterator<E> innerIter;
 
       @Override
       public boolean hasNext() {
-        if (currBlock == null) {
-          return false;
-        }
-
-        return currBlockIter.hasNext() || currBlock.next != null;
+        return blockIter.hasNext() || (innerIter != null && innerIter.hasNext());
       }
 
       @Override
       public E next() {
-        if (currBlock == null) {
-          throw new NoSuchElementException();
+        if (innerIter == null || !innerIter.hasNext()) {
+          innerIter = blockIter.next().iterator();
         }
-        if (currBlockIter == null) {
-          currBlockIter = currBlock.ls.iterator();
-        }
-        if (currBlockIter.hasNext()) {
-          return currBlockIter.next();
-        } else {
-          currBlockIter = null;
-          currBlock = currBlock.next;
-          return next();
-        }
-      }
-
-      private Iterator<E> assignIter() {
-        if (currBlock != null) {
-          return currBlock.ls.iterator();
-        } else {
-          return null;
-        }
+        return innerIter.next();
       }
     };
   }
@@ -110,24 +119,18 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public boolean add(E e) {
-    if (head == null) {
-      head = new Block(new ArrayList<>(bucketSize), null);
-      head.ls.add(e);
-      return true;
+    if (blocks.isEmpty()) {
+      blocks.add(newBlock());
     }
 
-    Block currBlock = head;
-    while (currBlock.next != null) {
-      currBlock = currBlock.next;
+    Block last = blocks.getLast();
+    if (last.size() >= bucketSize) {
+      last = newBlock();
+      blocks.add(last);
     }
 
-    if (currBlock.size() == bucketSize) {
-      currBlock.next = new Block(new ArrayList<>(bucketSize), null);
-      currBlock.next.ls.add(e);
-    } else {
-      currBlock.ls.add(e);
-    }
-    return true;
+    size++;
+    return last.add(e);
   }
 
   @Override
@@ -183,7 +186,55 @@ public class UnrolledLinkList<E> implements List<E> {
 
   @Override
   public void add(int index, E element) {
+    if (index > size()) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
 
+    int currIndex = index;
+    Iterator<Block> blocksIter = blocks.iterator();
+    Block currBlock;
+    while (blocksIter.hasNext()) {
+      currBlock = blocksIter.next();
+
+      // adding to end of list
+      if ((currIndex - currBlock.size()) == 0 && !blocksIter.hasNext()) {
+        Block last = newBlock();
+        last.add(element);
+        blocks.add(last);
+        break;
+      }
+
+      // adding to existing block
+      if ((currIndex - currBlock.size()) < 0) {
+        currBlock.add(currIndex, element);
+
+        if (currBlock.size() >= bucketSize) {
+          E elementToShift = currBlock.popLast();
+          prependAndShift(blocksIter, elementToShift);
+        }
+        break;
+      }
+
+      currIndex -= currBlock.size();
+    }
+  }
+
+  private void prependAndShift(Iterator<Block> blocksIter, E element) {
+    if (!blocksIter.hasNext()) {
+      Block last = newBlock();
+      last.add(element);
+      blocks.add(last);
+      return;
+    }
+
+    Block currBlock = blocksIter.next();
+    currBlock.add(0, element);
+
+    if (currBlock.size() >= bucketSize) {
+      // no space here, lets
+      E elementToShift = currBlock.popLast();
+      prependAndShift(blocksIter, elementToShift);
+    }
   }
 
   @Override
