@@ -1,8 +1,5 @@
 package com.cevaris.patterns.bridge;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import com.cevaris.test.utils.TestPool;
 import com.cevaris.test.utils.TestWorker;
 
@@ -22,7 +19,6 @@ public class ComputerTest {
     @Override
     public void run() {
       Long result = computer.submit(getIteration());
-      System.out.println(result);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.cevaris.datastructures;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.cevaris.datastructures.TreeNode.treeNode;
@@ -16,17 +15,6 @@ public class BinaryTreeTest {
     BinaryTree<Integer> tree = new BinaryTree<>(BinaryTree.IN_ORDER, root);
     Object[] actual = tree.toArray();
     Object[] expected = {1, 2, 3, 4, 5, 6};
-    Assert.assertArrayEquals(actual, expected);
-  }
-
-  @Ignore
-  public void testAddNode() {
-    BinaryTree<Integer> tree = new BinaryTree<>(BinaryTree.IN_ORDER, root);
-
-    tree.add(7);
-
-    Object[] actual = tree.toArray();
-    Object[] expected = {1, 2, 3, 4, 5, 6, 7};
     Assert.assertArrayEquals(actual, expected);
   }
 

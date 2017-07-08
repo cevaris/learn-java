@@ -1,11 +1,11 @@
 package com.cevaris.datastructures;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import static com.cevaris.test.utils.TestUtils.newList;
 
 public class UnrolledLinkListTest {
 
@@ -114,8 +114,4 @@ public class UnrolledLinkListTest {
     }
   }
 
-  @SafeVarargs
-  private final <E> List<E> newList(E... collection) {
-    return new ArrayList<E>(Arrays.asList(collection));
-  }
 }
