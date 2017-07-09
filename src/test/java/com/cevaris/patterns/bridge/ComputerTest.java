@@ -1,5 +1,8 @@
 package com.cevaris.patterns.bridge;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import com.cevaris.test.utils.TestPool;
 import com.cevaris.test.utils.TestWorker;
 
