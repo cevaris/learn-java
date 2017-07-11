@@ -14,8 +14,8 @@ public class TestUtils {
     return new ArrayList<E>(Arrays.asList(collection));
   }
 
-  public static List<Integer> newList(int from, int to) {
-    return new ArrayList<>(IntStream.range(from, to).boxed().collect(Collectors.toList()));
+  public static List<Integer> until(int fromInclusive, int toExclusive) {
+    return new ArrayList<>(IntStream.range(fromInclusive, toExclusive).boxed().collect(Collectors.toList()));
   }
 
   public static void sleep(long ms) {

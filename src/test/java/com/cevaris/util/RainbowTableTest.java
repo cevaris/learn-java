@@ -21,7 +21,7 @@ public class RainbowTableTest {
   public void testWeakReference() throws ExecutionException, InterruptedException, TimeoutException {
     final RainbowTable table = new WeakRainbowTable();
     int N = 10_000;
-    List<Integer> ints = TestUtils.newList(0, N);
+    List<Integer> ints = TestUtils.until(0, N);
     for (Integer integer : ints) {
       table.add(integer.toString());
     }

@@ -1,5 +1,6 @@
 package com.cevaris.datastructures;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,32 +16,36 @@ public class SkipList<E extends Comparable> implements List<E> {
   private LinkedList<Node> ls;
   private final Random rand;
 
-  private int maxLevel = 1;
+  private int upperBoundLevel = 32;
+  private int currMaxLevel = 0;
 
-  public SkipList() {
-    rand = new Random(1234567890L);
+  SkipList() {
+    this(1234567890L);
+  }
+
+  SkipList(long seed) {
+    rand = new Random(seed);
     ls = new LinkedList<>();
   }
 
   private class Node {
     private final E value;
-    private final Object[] next;
+    private final List<Node> next;
 
-    public Node(E e, int level) {
+    Node(E e, int level) {
       value = e;
-      next = new Object[level];
+      next = new ArrayList<>(level);
     }
 
-    @SuppressWarnings("unchecked")
-    Node next(int level) {
-      return (Node) next[level];
+    Node nextNodeAtLevel(int level) {
+      return next.get(level);
     }
 
-    void setNext(int level, Node node) {
-      next[level] = node;
+    void setNodeAtLevel(int level, Node node) {
+      next.set(level, node);
     }
 
-    public E getValue() {
+    E getValue() {
       return value;
     }
   }
@@ -97,8 +102,8 @@ public class SkipList<E extends Comparable> implements List<E> {
     int targetLevel = 0;
     for (int R = rand.nextInt(); (R & 1) == 1; R >>= 1) {
       targetLevel++;
-      if (targetLevel == maxLevel) {
-        maxLevel++;
+      if (targetLevel == currMaxLevel) {
+        currMaxLevel++;
         break;
       }
     }
@@ -110,13 +115,6 @@ public class SkipList<E extends Comparable> implements List<E> {
 
     if (!iter.hasNext()) {
       return ls.add(newNode);
-    }
-
-    Node curr = iter.next();
-    for (int currLevel = maxLevel; currLevel > 0; currLevel--) {
-      if (curr.next.length < currLevel && curr.next(currLevel) != null) {
-
-      }
     }
 
     return false;
