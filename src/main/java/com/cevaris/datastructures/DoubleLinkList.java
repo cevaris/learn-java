@@ -10,24 +10,53 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 interface DoubleLinkList<E> extends List<E>, Deque<E> {
-  boolean addAfter(DNode<E> target, E e);
+  boolean addAfter(Node<E> target, E e);
 
-  boolean addBefore(DNode<E> target, E e);
+  boolean addBefore(Node<E> target, E e);
+
+  Node<E> getNode(int index);
+
+  Node<E> getFirstNode();
+
+  Node<E> getLastNode();
 }
 
-class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
+class OpenDoubleLinkedList<E> implements DoubleLinkList<E> {
 
-  private DNode<E> head = null;
-  private DNode<E> tail = null;
+  private Node<E> head = null;
+  private Node<E> last = null;
   private int size = 0;
 
   @Override
-  public boolean addAfter(DNode<E> target, E e) {
-    DNode<E> node = new DNode<>(e);
+  public Node<E> getFirstNode() {
+    return head;
+  }
+
+  @Override
+  public Node<E> getLastNode() {
+    return last;
+  }
+
+  @Override
+  public Node<E> getNode(int index) {
+    Iterator<Node<E>> iter = nodeIterator();
+    Node<E> curr = null;
+    int i = -1;
+    do {
+      i++;
+      curr = iter.next();
+    }
+    while (i < index && iter.hasNext());
+    return curr;
+  }
+
+  @Override
+  public boolean addAfter(Node<E> target, E e) {
+    Node<E> node = new Node<>(e);
 
     if (isEmpty()) {
       head = node;
-      tail = node;
+      last = node;
     } else {
       node.setPrev(target);
       if (target.getNext() != null) {
@@ -36,8 +65,8 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
       }
       target.setNext(node);
 
-      if (target == tail) {
-        tail = node;
+      if (target == last) {
+        last = node;
       }
     }
 
@@ -46,12 +75,12 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
   }
 
   @Override
-  public boolean addBefore(DNode<E> target, E e) {
-    DNode<E> newNode = new DNode<>(e);
+  public boolean addBefore(Node<E> target, E e) {
+    Node<E> newNode = new Node<>(e);
 
     if (isEmpty()) {
       head = newNode;
-      tail = newNode;
+      last = newNode;
     } else {
       newNode.setNext(target);
 
@@ -78,7 +107,7 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
 
   @Override
   public void addLast(E e) {
-    addAfter(tail, e);
+    addAfter(last, e);
   }
 
   @Override
@@ -121,10 +150,10 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
 
   @Override
   public E getLast() {
-    if (tail == null) {
+    if (last == null) {
       throw new NoSuchElementException();
     }
-    return tail.getValue();
+    return last.getValue();
   }
 
   @Override
@@ -205,7 +234,7 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
   @Override
   public Iterator<E> iterator() {
     return new Iterator<E>() {
-      Iterator<DNode<E>> iterator = nodeIterator();
+      Iterator<Node<E>> iterator = nodeIterator();
 
       @Override
       public boolean hasNext() {
@@ -236,17 +265,17 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
 
   @Override
   public boolean add(E e) {
-    DNode<E> currTail = tail;
+    Node<E> currTail = last;
 
-    DNode<E> node = new DNode<>(e);
+    Node<E> node = new Node<>(e);
 
     if (isEmpty()) {
       head = node;
-      tail = node;
+      last = node;
     } else {
       currTail.setNext(node);
       node.setPrev(currTail);
-      tail = node;
+      last = node;
     }
 
     size++;
@@ -255,7 +284,27 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
 
   @Override
   public boolean remove(Object o) {
-    return false;
+    Node<E> curr = head;
+    while (curr != null && !curr.getValue().equals(o)) {
+      curr = curr.getNext();
+    }
+
+    if (curr == null) {
+      return false; // did not find target
+    }
+
+    if (curr == head) {
+      head = curr.getNext();
+    } else if (curr == last) {
+      last = curr.getPrev();
+      curr.getPrev().setNext(null);
+    } else {
+      curr.getNext().setPrev(curr.getPrev());
+      curr.getPrev().setNext(curr.getNext());
+    }
+
+    size--;
+    return true;
   }
 
   @Override
@@ -337,9 +386,9 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
     return null;
   }
 
-  private Iterator<DNode<E>> nodeIterator() {
-    return new Iterator<DNode<E>>() {
-      DNode<E> curr = head;
+  private Iterator<Node<E>> nodeIterator() {
+    return new Iterator<Node<E>>() {
+      Node<E> curr = head;
 
       @Override
       public boolean hasNext() {
@@ -347,12 +396,12 @@ class DefaultDoubleLinkList<E> implements DoubleLinkList<E> {
       }
 
       @Override
-      public DNode<E> next() {
+      public Node<E> next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
 
-        DNode<E> tmp = curr;
+        Node<E> tmp = curr;
         curr = curr.getNext();
         return tmp;
       }

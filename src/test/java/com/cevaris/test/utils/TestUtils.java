@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 public class TestUtils {
 
@@ -16,6 +17,10 @@ public class TestUtils {
 
   public static List<Integer> until(int fromInclusive, int toExclusive) {
     return new ArrayList<>(IntStream.range(fromInclusive, toExclusive).boxed().collect(Collectors.toList()));
+  }
+
+  public static List<Long> until(long fromInclusive, long toExclusive) {
+    return new ArrayList<>(LongStream.range(fromInclusive, toExclusive).boxed().collect(Collectors.toList()));
   }
 
   public static void sleep(long ms) {

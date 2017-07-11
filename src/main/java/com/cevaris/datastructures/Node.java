@@ -1,28 +1,28 @@
 package com.cevaris.datastructures;
 
 
-class DNode<E> {
-  private DNode<E> prev;
-  private DNode<E> next;
+class Node<E> {
+  private Node<E> prev;
+  private Node<E> next;
   private final E value;
 
-  DNode(E value) {
+  Node(E value) {
     this.value = value;
   }
 
-  public void setPrev(DNode<E> prev) {
+  public void setPrev(Node<E> prev) {
     this.prev = prev;
   }
 
-  public void setNext(DNode<E> next) {
+  public void setNext(Node<E> next) {
     this.next = next;
   }
 
-  public DNode<E> getPrev() {
+  public Node<E> getPrev() {
     return prev;
   }
 
-  public DNode<E> getNext() {
+  public Node<E> getNext() {
     return next;
   }
 

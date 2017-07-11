@@ -1,11 +1,10 @@
 package com.cevaris.concurrency.dining_philosophers;
 
 
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -22,17 +21,16 @@ public class DiningPhilosophers {
   void start(long runForMs) throws InterruptedException {
     final Waiter waiter = new BenitoTheWaiter(numberOfPhilosophers);
     final DiningClock clock = new ChefsWatch();
-    final Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
 
-    Arrays.fill(philosophers, new LeftyRightyPhilosopher(waiter, clock));
-    for (Philosopher p : philosophers) {
-      dinnerTable.submit(p);
+    for (int i = 0; i < numberOfPhilosophers; i++) {
+      dinnerTable.submit(new LeftyRightyPhilosopher(waiter, clock));
     }
 
-    Thread.sleep(runForMs);
-    clock.endDinner();
-    dinnerTable.shutdown();
-    dinnerTable.awaitTermination(1, TimeUnit.DAYS);
+    Thread.sleep(runForMs * 10000);
+//    clock.endDinner();
+//    Thread.sleep(runForMs / 2);
+//    dinnerTable.shutdown();
+//    dinnerTable.awaitTermination(1, TimeUnit.DAYS);
   }
 
 }
@@ -54,48 +52,65 @@ class LeftyRightyPhilosopher implements Philosopher {
 
   @Override
   public void run() {
-    while (isTimeToEat()) {
+    while (true) {
+
+      boolean isDinnerTime = clock.isDinnerTime();
+      boolean interrupted = Thread.currentThread().isInterrupted();
+
+      if (!isDinnerTime || interrupted) {
+        stopEating();
+        printStatus("finished dinner");
+        break;
+      }
 
       if (left == null) {
         printStatus("waiting left");
-        left = waiter.askForFork();
+        left = waiter.askForLeft();
         printStatus("got left");
-      } else if (right == null) {
-        printStatus("waiting right");
-        right = waiter.askForFork();
-        printStatus("got right");
-      } else {
-        printStatus("is eating");
-        stopEating();
+        continue;
       }
-    }
 
-    stopEating();
-    printStatus("finished dinner");
+      if (right == null) {
+        printStatus("waiting right");
+        right = waiter.askForRight();
+        printStatus("got right");
+        continue;
+      }
+
+      printStatus("is eating");
+      stopEating();
+    }
   }
 
   private void printStatus(String msg) {
-    System.out.println(Thread.currentThread().getId() + " " + msg);
+    System.out.println(Thread.currentThread().getName() + " " + msg + "[ " + left + "," + right + "]");
+    System.out.flush();
   }
 
   private void stopEating() {
     if (left != null) {
-      waiter.returnFork(left);
+      waiter.returnLeft(left);
+      left = null;
+      printStatus("released left");
     }
     if (right != null) {
-      waiter.returnFork(right);
+      waiter.returnRight(right);
+      right = null;
+      printStatus("released right");
     }
-    right = null;
-    left = null;
   }
 
   private boolean isTimeToEat() {
-    return clock.isDinnerTime() && !Thread.interrupted();
+    return clock.isDinnerTime() && !Thread.currentThread().isInterrupted();
   }
 }
 
 
 class Fork {
+  @Override
+  public String toString() {
+    return "fork";
+  }
 }
 
 interface DiningClock {
@@ -120,42 +135,62 @@ class ChefsWatch implements DiningClock {
 }
 
 interface Waiter {
-  Fork askForFork();
+  Fork askForLeft();
 
-  void returnFork(Fork fork);
+  Fork askForRight();
+
+  void returnLeft(Fork fork);
+
+  void returnRight(Fork fork);
 }
 
 class BenitoTheWaiter implements Waiter {
 
-  private final Semaphore semaphore;
-  private final Queue<Fork> forks;
+  private final Semaphore semaphoreRight;
+  private final Semaphore semaphoreLeft;
+  private final Deque<Fork> forks;
 
   public BenitoTheWaiter(int numberOfForks) {
-    semaphore = new Semaphore(numberOfForks - 1);
-    forks = new LinkedBlockingQueue<>(numberOfForks);
+    semaphoreLeft = new Semaphore(numberOfForks - (numberOfForks / 2));
+    semaphoreRight = new Semaphore(numberOfForks / 2);
+
+    forks = new LinkedList<>();
     for (int i = 0; i < numberOfForks; i++) {
       forks.add(new Fork());
     }
   }
 
   @Override
-  public Fork askForFork() {
-    try {
-      while (semaphore.tryAcquire(10, TimeUnit.MILLISECONDS)) {
-        System.out.println(Thread.currentThread().getId() + " waiting");
-      }
-
-      return forks.poll();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-
-    return null;
+  public Fork askForRight() {
+    return ask(semaphoreRight);
   }
 
   @Override
-  public void returnFork(Fork fork) {
-    forks.add(fork);
-    semaphore.release();
+  public Fork askForLeft() {
+    return ask(semaphoreLeft);
+  }
+
+  private Fork ask(Semaphore s) {
+    try {
+      s.tryAcquire(10, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+    return forks.pop();
+  }
+
+  @Override
+  public void returnLeft(Fork fork) {
+    returnFork(semaphoreLeft, fork);
+  }
+
+  @Override
+  public void returnRight(Fork fork) {
+    returnFork(semaphoreRight, fork);
+  }
+
+  private void returnFork(Semaphore s, Fork fork) {
+    forks.addLast(fork);
+    s.release();
   }
 }

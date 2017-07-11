@@ -14,8 +14,7 @@ public class UnrolledLinkListTest {
     List<String> ls = new UnrolledLinkList<>(9);
     Assert.assertTrue(ls.isEmpty());
     Assert.assertEquals(0, ls.size());
-    Assert.assertArrayEquals(new Object[]{}, ls.toArray());
-  }
+    Assert.assertArrayEquals(new Object[]{}, ls.toArray()); }
 
   @Test
   public void testAddOne() {
