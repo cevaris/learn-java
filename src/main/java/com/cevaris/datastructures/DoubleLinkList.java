@@ -40,7 +40,7 @@ class OpenDoubleLinkedList<E> implements DoubleLinkList<E> {
   @Override
   public Node<E> getNode(int index) {
     Iterator<Node<E>> iter = nodeIterator();
-    Node<E> curr = null;
+    Node<E> curr;
     int i = -1;
     do {
       i++;

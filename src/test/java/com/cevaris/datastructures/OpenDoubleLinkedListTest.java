@@ -30,6 +30,8 @@ public class OpenDoubleLinkedListTest {
   @Test
   public void testRemove() {
     DoubleLinkList<Long> actual = new OpenDoubleLinkedList<>();
+    Assert.assertFalse(actual.remove(11L)); // remove on empty list
+
     List<Long> expected = TestUtils.until(0L, 5L);
     actual.addAll(expected);
 
@@ -74,12 +76,10 @@ public class OpenDoubleLinkedListTest {
     ///////////
     // middle
     expected.add(3, 30);
-    head = actual.getFirstNode();
     actual.addBefore(actual.getNode(3), 30);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
     expected.add(5, 40);
-    head = actual.getFirstNode();
     actual.addAfter(actual.getNode(4), 40);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
