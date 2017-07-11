@@ -54,11 +54,13 @@ public class OpenDoubleLinkedListTest {
   }
 
   @Test
-  public void addTestAddBeforeAndAfter() {
+  public void testAddBeforeAndAfter() {
     DoubleLinkList<Integer> actual = new OpenDoubleLinkedList<>();
     List<Integer> expected = TestUtils.until(0, 3);
     actual.addAll(expected);
 
+    ///////////
+    // front
     expected.add(0, 10);
     Node<Integer> head = actual.getFirstNode();
     actual.addBefore(head, 10);
@@ -68,6 +70,29 @@ public class OpenDoubleLinkedListTest {
     head = actual.getFirstNode();
     actual.addAfter(head, 11);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
-  }
 
+    ///////////
+    // middle
+    expected.add(3, 30);
+    head = actual.getFirstNode();
+    actual.addBefore(actual.getNode(3), 30);
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+    expected.add(5, 40);
+    head = actual.getFirstNode();
+    actual.addAfter(actual.getNode(4), 40);
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+    ///////////
+    // last
+    expected.add(expected.size() - 1, 100);
+    Node<Integer> last = actual.getLastNode();
+    actual.addBefore(last, 100);
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+
+    expected.add(101);
+    last = actual.getLastNode();
+    actual.addAfter(last, 101);
+    Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+  }
 }

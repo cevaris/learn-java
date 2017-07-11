@@ -52,21 +52,21 @@ class OpenDoubleLinkedList<E> implements DoubleLinkList<E> {
 
   @Override
   public boolean addAfter(Node<E> target, E e) {
-    Node<E> node = new Node<>(e);
+    Node<E> newNode = new Node<>(e);
 
     if (isEmpty()) {
-      head = node;
-      last = node;
+      head = newNode;
+      last = newNode;
     } else {
-      node.setPrev(target);
+      newNode.setPrev(target);
       if (target.getNext() != null) {
-        node.setNext(target.getNext());
-        target.getNext().setPrev(node);
+        newNode.setNext(target.getNext());
+        target.getNext().setPrev(newNode);
       }
-      target.setNext(node);
+      target.setNext(newNode);
 
       if (target == last) {
-        last = node;
+        last = newNode;
       }
     }
 
@@ -265,21 +265,7 @@ class OpenDoubleLinkedList<E> implements DoubleLinkList<E> {
 
   @Override
   public boolean add(E e) {
-    Node<E> currTail = last;
-
-    Node<E> node = new Node<>(e);
-
-    if (isEmpty()) {
-      head = node;
-      last = node;
-    } else {
-      currTail.setNext(node);
-      node.setPrev(currTail);
-      last = node;
-    }
-
-    size++;
-    return true;
+    return addAfter(last, e);
   }
 
   @Override
