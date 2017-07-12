@@ -1,7 +1,10 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.List;
 
+import com.cevaris.datastructures.lists.DoubleLinkList;
+import com.cevaris.datastructures.lists.Node;
+import com.cevaris.datastructures.lists.OpenDoubleLinkedList;
 import com.cevaris.test.utils.TestUtils;
 
 import org.junit.Assert;

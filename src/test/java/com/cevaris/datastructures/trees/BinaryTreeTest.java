@@ -1,13 +1,13 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.trees;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.cevaris.datastructures.TreeNode.treeNode;
+import static com.cevaris.datastructures.trees.Node.treeNode;
 
 public class BinaryTreeTest {
 
-  private TreeNode<Integer> root =
+  private Node<Integer> root =
       treeNode(1, null, treeNode(2, null, treeNode(5, treeNode(3, null, treeNode(4, null, null)), treeNode(6, null, null))));
 
   @Test

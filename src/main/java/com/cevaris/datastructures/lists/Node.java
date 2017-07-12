@@ -1,4 +1,4 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 
 class Node<E> {

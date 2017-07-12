@@ -1,8 +1,10 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import com.cevaris.datastructures.lists.CircularLinkList;
 
 import org.junit.Assert;
 import org.junit.Test;

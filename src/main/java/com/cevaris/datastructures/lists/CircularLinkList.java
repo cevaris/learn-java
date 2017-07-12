@@ -1,11 +1,11 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class SingleLinkList<E> implements List<E> {
+public class CircularLinkList<E> implements List<E> {
 
   private Node<E> head;
 
@@ -13,23 +13,30 @@ public class SingleLinkList<E> implements List<E> {
     E value;
     Node<E> next;
 
-    public Node(E value, Node next) {
+    Node(E value, Node<E> next) {
       this.value = value;
       this.next = next;
+    }
+
+    Node(E value) {
+      this.value = value;
     }
   }
 
   @Override
   public int size() {
-    int size = 0;
-    if (head != null) {
-      Node curr = head;
-      while (curr != null) {
-        size++;
-        curr = curr.next;
-      }
-    }
+    if (head == null)
+      return 0;
 
+    if (head.next == head)
+      return 1;
+
+    int size = 1;
+    Node<E> curr = head;
+    while (curr.next != head) {
+      size++;
+      curr = curr.next;
+    }
     return size;
   }
 
@@ -45,24 +52,41 @@ public class SingleLinkList<E> implements List<E> {
 
   @Override
   public Iterator<E> iterator() {
-    return null;
+    return new Iterator<E>() {
+      Node<E> pos = head;
+
+      @Override
+      public boolean hasNext() {
+        return pos.next == head;
+      }
+
+      @Override
+      public E next() {
+        Node<E> curr = pos;
+        pos = pos.next;
+        return curr.value;
+      }
+    };
   }
 
   @Override
   public Object[] toArray() {
-    Object[] collection = new Object[size()];
+    int size = this.size();
+    Object[] obj = new Object[size];
 
-    if (head != null) {
-
-      int idx = 0;
-      Node curr = head;
-      while (curr != null) {
-        collection[idx] = curr.value;
-        idx++;
-        curr = curr.next;
-      }
+    if (head == null) {
+      return obj;
     }
-    return collection;
+
+    obj[0] = head.value;
+
+    Node<E> curr = head.next;
+    for(int i = 1; curr != head; i++){
+      obj[i] = curr.value;
+      curr = curr.next;
+    }
+
+    return obj;
   }
 
   @Override
@@ -73,55 +97,60 @@ public class SingleLinkList<E> implements List<E> {
   @Override
   public boolean add(E e) {
     if (head == null) {
-      head = new Node<>(e, null);
-    } else if (head.next == null) {
-      head.next = new Node<>(e, null);
-    } else {
-      Node curr = head;
-      while (curr.next != null) {
-        curr = curr.next;
-      }
-      curr.next = new Node<>(e, null);
+      head = new Node<>(e);
+      head.next = head;
+      return true;
     }
-    return true;
+
+    Node<E> curr = head;
+    while (curr.next != head) {
+      curr = curr.next;
+    }
+
+    curr.next = new Node<E>(e, head);
+    return false;
   }
 
   @Override
   public boolean remove(Object o) {
-    if(head == null)
+    //0
+    if (head == null)
       return false;
 
-    if(head.next == null && head.value.equals(o)){
+    //1
+    if (head.next == head && head.value.equals(o)) {
       head = null;
-      return true;
-    } else if(head.value.equals(o)) {
-      head = head.next;
       return true;
     }
 
-    Node prev = head;
-    Node curr = head.next;
-    Node target = null;
+    //N
+    Node<E> prev = head;
+    Node<E> curr = head.next;
 
-    while(curr != null){
-      if(curr.value.equals(o)) {
-        target = curr;
-        break;
+    while (curr != head) {
+      if (curr.value.equals(o)) {
+        if (curr.next == head) {
+          prev.next = head;
+          return true;
+        }
+
+        prev.next = curr.next;
+        return true;
       }
+
       prev = curr;
       curr = curr.next;
     }
 
-    if(target == null)
-      return false;
-
-    if(target.next == null) {
-      prev.next = null;
+    if (head.value.equals(o)) {
+      //prev is last node
+      Node<E> newHead = head.next;
+      head = newHead;
+      prev.next = newHead;
       return true;
     }
 
-    prev.next = target.next;
-    return true;
+    return false;
   }
 
   @Override
@@ -131,14 +160,13 @@ public class SingleLinkList<E> implements List<E> {
 
   @Override
   public boolean addAll(Collection<? extends E> c) {
-    if (c.isEmpty()) {
+    if (c.isEmpty())
       return false;
-    } else {
-      for (E e : c) {
-        add(e);
-      }
-      return true;
+
+    for (E s : c) {
+      add(s);
     }
+    return true;
   }
 
   @Override

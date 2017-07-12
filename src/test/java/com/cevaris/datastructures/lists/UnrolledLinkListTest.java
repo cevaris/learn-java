@@ -1,6 +1,8 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.List;
+
+import com.cevaris.datastructures.lists.UnrolledLinkList;
 
 import org.junit.Assert;
 import org.junit.Test;

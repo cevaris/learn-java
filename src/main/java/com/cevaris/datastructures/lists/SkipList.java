@@ -1,4 +1,4 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.ArrayList;
 import java.util.Collection;

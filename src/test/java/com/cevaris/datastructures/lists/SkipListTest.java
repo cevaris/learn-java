@@ -1,7 +1,8 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.lists;
 
 import java.util.List;
 
+import com.cevaris.datastructures.lists.SkipList;
 import com.cevaris.test.utils.TestUtils;
 
 import org.junit.Assert;

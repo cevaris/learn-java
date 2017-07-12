@@ -1,9 +1,8 @@
-package com.cevaris.datastructures;
+package com.cevaris.datastructures.trees;
 
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -22,14 +21,14 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
 
   private final int traversalOrder;
 
-  private TreeNode<A> root;
+  private Node<A> root;
 
-  public BinaryTree(int traversalOrder, TreeNode<A> root) {
+  public BinaryTree(int traversalOrder, Node<A> root) {
     this.traversalOrder = traversalOrder;
     this.root = root;
   }
 
-  public BinaryTree(TreeNode<A> root) {
+  public BinaryTree(Node<A> root) {
     this.traversalOrder = PRE_ORDER;
     this.root = root;
   }
@@ -75,9 +74,9 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     return true;
   }
 
-  private void addNode(TreeNode<A> node, A value) {
+  private void addNode(Node<A> node, A value) {
     if (node == null) {
-      node = new TreeNode<>(value);
+      node = new Node<>(value);
       return;
     }
 
@@ -150,7 +149,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     return builder.toString();
   }
 
-  private void traverseTop(TreeNode<A> node, Deque<A> ls, boolean traverseLeft) {
+  private void traverseTop(Node<A> node, Deque<A> ls, boolean traverseLeft) {
     if (node == null) {
       return;
     }
@@ -168,7 +167,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     return findHeight(root) - 1;
   }
 
-  private int findHeight(TreeNode<A> node) {
+  private int findHeight(Node<A> node) {
     if (node == null) {
       return 0;
     } else {
@@ -176,7 +175,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     }
   }
 
-  private List<A> postOrder(TreeNode<A> node, List<A> ls) {
+  private List<A> postOrder(Node<A> node, List<A> ls) {
     if (node == null) {
       return ls;
     }
@@ -187,12 +186,12 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     return ls;
   }
 
-  private void breadthFirstSearch(List<A> ls, Deque<TreeNode<A>> queue) {
+  private void breadthFirstSearch(List<A> ls, Deque<Node<A>> queue) {
     if (queue.isEmpty()) {
       return;
     }
 
-    TreeNode<A> curr = queue.poll();
+    Node<A> curr = queue.poll();
     ls.add(curr.data);
 
     if (curr.left != null) {
@@ -206,7 +205,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     breadthFirstSearch(ls, queue);
   }
 
-  private List<A> preOrder(TreeNode<A> node, List<A> ls) {
+  private List<A> preOrder(Node<A> node, List<A> ls) {
     if (node == null) {
       return ls;
     }
@@ -217,7 +216,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
     return ls;
   }
 
-  private List<A> inOrder(TreeNode<A> node, List<A> ls) {
+  private List<A> inOrder(Node<A> node, List<A> ls) {
     if (node == null) {
       return ls;
     }
@@ -241,7 +240,7 @@ public class BinaryTree<A extends Comparable<A>> implements Collection<A> {
         ls = postOrder(root, ls);
         break;
       case BREADTH_FIRST_ORDER:
-        Deque<TreeNode<A>> queue = new ArrayDeque<>();
+        Deque<Node<A>> queue = new ArrayDeque<>();
         queue.add(root);
         breadthFirstSearch(ls, queue);
         break;
