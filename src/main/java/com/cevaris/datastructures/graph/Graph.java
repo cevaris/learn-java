@@ -2,26 +2,26 @@ package com.cevaris.datastructures.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 
 interface Graph<E> {
-  Iterator<Vertex<E>> iterator();
-
-  Iterator<Vertex<E>> iterator(VisitOrder order);
+  Iterator<E> iterator(VisitOrder order, E start);
 
   void addEdge(E a, E b);
 
-  List<Vertex<E>> toList();
-
-  Object[] toArray();
+  Object[] toArray(VisitOrder order, E start);
 
   int size();
+
+  boolean isEmpty();
 }
 
 enum VisitOrder {
@@ -47,35 +47,76 @@ class GraphBuilder<E> {
 }
 
 class GenericGraph<E> implements Graph<E> {
-  private final Set<Vertex<E>> vertices;
+  private final LinkedList<Vertex<E>> vertices;
   private final Map<E, Vertex<E>> lookup;
 
   public GenericGraph() {
-    vertices = new HashSet<>();
+    vertices = new LinkedList<>();
     lookup = new HashMap<>();
   }
 
   @Override
+  public boolean isEmpty() {
+    return size() == 0;
+  }
+
+  @Override
   public void addEdge(E from, E to) {
-    // for quick node lookup
     Vertex<E> vertexFrom = lookup.computeIfAbsent(from, Vertex::new);
-    Vertex<E> vertexTo = lookup.computeIfAbsent(to, Vertex::new);
-
-    // from -> to
-    vertexFrom.addNeighbor(vertexTo);
-
     vertices.add(vertexFrom);
+
+    Vertex<E> vertexTo = lookup.computeIfAbsent(to, Vertex::new);
     vertices.add(vertexTo);
+
+    vertexFrom.addNeighbor(vertexTo);
   }
 
-  @Override
-  public Iterator<Vertex<E>> iterator() {
-    return vertices.iterator();
+  public Iterator<E> iterator(VisitOrder order, E e) {
+    if (isEmpty()) {
+      return Collections.emptyIterator();
+    }
+
+    List<E> visited = new LinkedList<>();
+    markAllAs(VisitState.UNVISITED);
+
+    switch (order) {
+      case DFS:
+        dfs(lookup.get(e), visited);
+        break;
+      case BFS:
+      default:
+        bfs(lookup.get(e), visited);
+        break;
+    }
+
+    return visited.iterator();
   }
 
-  @Override
-  public Iterator<Vertex<E>> iterator(VisitOrder order) {
-    return null;
+  private void bfs(Vertex<E> v, List<E> visited) {
+    Queue<Vertex<E>> queue = new ArrayBlockingQueue<>(size());
+    queue.add(v);
+
+    do {
+      Vertex<E> currV = queue.poll();
+
+      if (currV.getVisit() == VisitState.UNVISITED) {
+        currV.setVisit(VisitState.VISITED);
+        visited.add(currV.getValue());
+        queue.addAll(currV.getNeighbors());
+      }
+
+    } while (!queue.isEmpty());
+  }
+
+  private void dfs(Vertex<E> v, List<E> visited) {
+    v.setVisit(VisitState.VISITED);
+    visited.add(v.getValue());
+
+    for (Vertex<E> e : v.getNeighbors()) {
+      if (e.getVisit() == VisitState.UNVISITED) {
+        dfs(e, visited);
+      }
+    }
   }
 
   @Override
@@ -84,17 +125,18 @@ class GenericGraph<E> implements Graph<E> {
   }
 
   @Override
-  public List<Vertex<E>> toList() {
-    List<Vertex<E>> arr = new ArrayList<>();
-    Iterator<Vertex<E>> iter = iterator();
+  public Object[] toArray(VisitOrder order, E start) {
+    List<E> arr = new ArrayList<>();
+    Iterator<E> iter = iterator(order, start);
     while (iter.hasNext()) {
       arr.add(iter.next());
     }
-    return arr;
+    return arr.toArray();
   }
 
-  @Override
-  public Object[] toArray() {
-    return toList().toArray();
+  private void markAllAs(VisitState state) {
+    for (Vertex<E> v : vertices) {
+      v.setVisit(state);
+    }
   }
 }

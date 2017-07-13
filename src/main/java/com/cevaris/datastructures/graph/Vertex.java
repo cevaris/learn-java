@@ -1,24 +1,24 @@
 package com.cevaris.datastructures.graph;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class Vertex<E> {
   private final E value;
-  private final Set<Edge<E>> neighbors;
+  private final List<Vertex<E>> neighbors;
   private VisitState visit = VisitState.UNVISITED;
 
   public Vertex(E value) {
     this.value = value;
-    neighbors = new HashSet<>();
+    neighbors = new ArrayList<>();
   }
 
   public E getValue() {
     return value;
   }
 
-  public Set<Edge<E>> getNeighbors() {
+  public List<Vertex<E>> getNeighbors() {
     return neighbors;
   }
 
@@ -31,7 +31,7 @@ public class Vertex<E> {
   }
 
   public void addNeighbor(Vertex<E> to) {
-    neighbors.add(new Edge<>(value, to.getValue()));
+    neighbors.add(to);
   }
 
   @Override
