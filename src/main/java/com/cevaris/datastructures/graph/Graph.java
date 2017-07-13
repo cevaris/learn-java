@@ -36,20 +36,18 @@ class GraphBuilder<E extends Comparable<E>> {
   }
 
   Graph<E> buildDirected() {
-    final Graph<E> graph = new DirectedGraph<>();
-    for (Edge<E> e : ls) {
-      graph.addEdge(e.getFrom(), e.getTo());
-    }
-    return graph;
+    return build(new DirectedGraph<>());
   }
 
   Graph<E> buildUndirected() {
-    final Graph<E> graph = new UndirectedGraph<>();
+    return build(new UndirectedGraph<>());
+  }
+
+  private Graph<E> build(Graph<E> g) {
     for (Edge<E> e : ls) {
-      graph.addEdge(e.getFrom(), e.getTo());
-      graph.addEdge(e.getTo(), e.getFrom());
+      g.addEdge(e.getFrom(), e.getTo());
     }
-    return graph;
+    return g;
   }
 }
 
@@ -68,17 +66,6 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
   }
 
   @Override
-  public void addEdge(E from, E to) {
-    Vertex<E> vertexFrom = lookup.computeIfAbsent(from, Vertex::new);
-    vertices.add(vertexFrom);
-
-    Vertex<E> vertexTo = lookup.computeIfAbsent(to, Vertex::new);
-    vertices.add(vertexTo);
-
-    vertexFrom.addNeighbor(vertexTo);
-  }
-
-  @Override
   public int size() {
     return vertices.size();
   }
@@ -91,6 +78,12 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
       arr.add(iter.next());
     }
     return arr.toArray();
+  }
+
+  protected Vertex<E> addVertex(E e) {
+    Vertex<E> v = lookup.computeIfAbsent(e, Vertex::new);
+    vertices.add(v);
+    return v;
   }
 
   private Iterator<E> iterator(VisitOrder order, E e) {
@@ -158,8 +151,24 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
 
 class DirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
 
+  @Override
+  public void addEdge(E from, E to) {
+    Vertex<E> vertexFrom = addVertex(from);
+    Vertex<E> vertexTo = addVertex(to);
+    vertexFrom.addNeighbor(vertexTo);
+  }
+
 }
 
 class UndirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
+
+  @Override
+  public void addEdge(E from, E to) {
+    Vertex<E> vertexFrom = addVertex(from);
+    Vertex<E> vertexTo = addVertex(to);
+
+    vertexFrom.addNeighbor(vertexTo);
+    vertexTo.addNeighbor(vertexFrom);
+  }
 
 }
