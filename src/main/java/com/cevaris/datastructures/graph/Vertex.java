@@ -3,35 +3,48 @@ package com.cevaris.datastructures.graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Vertex<E> {
+public class Vertex<E extends Comparable<E>> implements Comparable<Vertex<E>> {
   private final E value;
-  private final List<Vertex<E>> neighbors;
+  private final Set<Vertex<E>> neighbors;
   private TraverseState visit = TraverseState.UNVISITED;
 
-  public Vertex(E value) {
+  Vertex(E value) {
     this.value = value;
-    neighbors = new ArrayList<>();
+    neighbors = new ConcurrentSkipListSet<>();
   }
 
-  public E getValue() {
+  E getValue() {
     return value;
   }
 
-  public List<Vertex<E>> getNeighbors() {
-    return neighbors;
+  List<Vertex<E>> getNeighbors() {
+    List<Vertex<E>> ts = new ArrayList<>(neighbors.size());
+    ts.addAll(neighbors);
+    return ts;
   }
 
-  public TraverseState getVisit() {
+  TraverseState getVisit() {
     return visit;
   }
 
-  public void setVisit(TraverseState visit) {
+  void setVisit(TraverseState visit) {
     this.visit = visit;
   }
 
-  public void addNeighbor(Vertex<E> to) {
+  void addNeighbor(Vertex<E> to) {
     neighbors.add(to);
+  }
+
+  int numOfNeighbors() {
+    return neighbors.size();
+  }
+
+  @Override
+  public int compareTo(Vertex<E> o) {
+    return value.compareTo(o.getValue());
   }
 
   @Override
@@ -51,7 +64,4 @@ public class Vertex<E> {
     return Objects.equals(this.value, other.value);
   }
 
-  public int numOfNeighbors() {
-    return neighbors.size();
-  }
 }

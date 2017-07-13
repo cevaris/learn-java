@@ -26,7 +26,7 @@ enum VisitOrder {
   DFS, BFS
 }
 
-class GraphBuilder<E> {
+class GraphBuilder<E extends Comparable<E>> {
   private List<Edge<E>> ls = new ArrayList<>();
 
   @SafeVarargs
@@ -35,20 +35,29 @@ class GraphBuilder<E> {
     return this;
   }
 
-  Graph<E> build() {
+  Graph<E> buildDirected() {
     final Graph<E> graph = new DirectedGraph<>();
     for (Edge<E> e : ls) {
       graph.addEdge(e.getFrom(), e.getTo());
     }
     return graph;
   }
+
+  Graph<E> buildUndirected() {
+    final Graph<E> graph = new UndirectedGraph<>();
+    for (Edge<E> e : ls) {
+      graph.addEdge(e.getFrom(), e.getTo());
+      graph.addEdge(e.getTo(), e.getFrom());
+    }
+    return graph;
+  }
 }
 
-class DirectedGraph<E> implements Graph<E> {
+abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
   private final LinkedList<Vertex<E>> vertices;
   private final Map<E, Vertex<E>> lookup;
 
-  DirectedGraph() {
+  AbstractGraph() {
     vertices = new LinkedList<>();
     lookup = new HashMap<>();
   }
@@ -110,6 +119,10 @@ class DirectedGraph<E> implements Graph<E> {
     queue.add(v);
 
     do {
+      if (visitor.state() == VisitorState.RETURN) {
+        return;
+      }
+
       Vertex<E> currV = queue.poll();
 
       if (currV.getVisit() == TraverseState.UNVISITED) {
@@ -122,6 +135,10 @@ class DirectedGraph<E> implements Graph<E> {
   }
 
   private void dfs(Vertex<E> v, GraphVisitor<E> visitor) {
+    if (visitor.state() == VisitorState.RETURN) {
+      return;
+    }
+
     v.setVisit(TraverseState.VISITED);
     visitor.apply(v);
 
@@ -137,4 +154,12 @@ class DirectedGraph<E> implements Graph<E> {
       v.setVisit(state);
     }
   }
+}
+
+class DirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
+
+}
+
+class UndirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
+
 }

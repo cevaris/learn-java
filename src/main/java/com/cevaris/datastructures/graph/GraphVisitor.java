@@ -10,16 +10,16 @@ enum VisitorState {
   RETURN    // stop all execution
 }
 
-interface GraphVisitor<E> {
+interface GraphVisitor<E extends Comparable<E>> {
   void apply(Vertex<E> v);
 
   VisitorState state();
 }
 
-class ListVisitor<E> implements GraphVisitor<E> {
+class ListVisitor<E extends Comparable<E>> implements GraphVisitor<E> {
   private final List<E> ls;
 
-  public ListVisitor(int size) {
+  ListVisitor(int size) {
     this.ls = new ArrayList<>(size);
   }
 
@@ -33,7 +33,7 @@ class ListVisitor<E> implements GraphVisitor<E> {
     return VisitorState.CONTINUE;
   }
 
-  public List<E> toList() {
+  List<E> toList() {
     return ls;
   }
 }
