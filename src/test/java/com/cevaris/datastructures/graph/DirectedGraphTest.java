@@ -7,7 +7,7 @@ import com.cevaris.test.utils.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class GenericGraphTest {
+public class DirectedGraphTest {
   private Graph<Integer> test = new GraphBuilder<Integer>()
       .withEdges(edge(0, 1), edge(0, 2), edge(1, 2), edge(2, 0), edge(2, 3), edge(3, 3))
       .build();

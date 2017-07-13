@@ -13,8 +13,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 
 interface Graph<E> {
-  Iterator<E> iterator(VisitOrder order, E start);
-
   void addEdge(E a, E b);
 
   Object[] toArray(VisitOrder order, E start);
@@ -38,7 +36,7 @@ class GraphBuilder<E> {
   }
 
   Graph<E> build() {
-    final Graph<E> graph = new GenericGraph<>();
+    final Graph<E> graph = new DirectedGraph<>();
     for (Edge<E> e : ls) {
       graph.addEdge(e.getFrom(), e.getTo());
     }
@@ -46,11 +44,11 @@ class GraphBuilder<E> {
   }
 }
 
-class GenericGraph<E> implements Graph<E> {
+class DirectedGraph<E> implements Graph<E> {
   private final LinkedList<Vertex<E>> vertices;
   private final Map<E, Vertex<E>> lookup;
 
-  public GenericGraph() {
+  DirectedGraph() {
     vertices = new LinkedList<>();
     lookup = new HashMap<>();
   }
@@ -71,54 +69,6 @@ class GenericGraph<E> implements Graph<E> {
     vertexFrom.addNeighbor(vertexTo);
   }
 
-  public Iterator<E> iterator(VisitOrder order, E e) {
-    if (isEmpty()) {
-      return Collections.emptyIterator();
-    }
-
-    List<E> visited = new LinkedList<>();
-    markAllAs(VisitState.UNVISITED);
-
-    switch (order) {
-      case DFS:
-        dfs(lookup.get(e), visited);
-        break;
-      case BFS:
-      default:
-        bfs(lookup.get(e), visited);
-        break;
-    }
-
-    return visited.iterator();
-  }
-
-  private void bfs(Vertex<E> v, List<E> visited) {
-    Queue<Vertex<E>> queue = new ArrayBlockingQueue<>(size());
-    queue.add(v);
-
-    do {
-      Vertex<E> currV = queue.poll();
-
-      if (currV.getVisit() == VisitState.UNVISITED) {
-        currV.setVisit(VisitState.VISITED);
-        visited.add(currV.getValue());
-        queue.addAll(currV.getNeighbors());
-      }
-
-    } while (!queue.isEmpty());
-  }
-
-  private void dfs(Vertex<E> v, List<E> visited) {
-    v.setVisit(VisitState.VISITED);
-    visited.add(v.getValue());
-
-    for (Vertex<E> e : v.getNeighbors()) {
-      if (e.getVisit() == VisitState.UNVISITED) {
-        dfs(e, visited);
-      }
-    }
-  }
-
   @Override
   public int size() {
     return vertices.size();
@@ -134,7 +84,55 @@ class GenericGraph<E> implements Graph<E> {
     return arr.toArray();
   }
 
-  private void markAllAs(VisitState state) {
+  private Iterator<E> iterator(VisitOrder order, E e) {
+    if (isEmpty()) {
+      return Collections.emptyIterator();
+    }
+
+    ListVisitor<E> visitor = new ListVisitor<>(size());
+    markAllAs(TraverseState.UNVISITED);
+
+    switch (order) {
+      case DFS:
+        dfs(lookup.get(e), visitor);
+        break;
+      case BFS:
+      default:
+        bfs(lookup.get(e), visitor);
+        break;
+    }
+
+    return visitor.toList().iterator();
+  }
+
+  private void bfs(Vertex<E> v, GraphVisitor<E> visitor) {
+    Queue<Vertex<E>> queue = new ArrayBlockingQueue<>(size());
+    queue.add(v);
+
+    do {
+      Vertex<E> currV = queue.poll();
+
+      if (currV.getVisit() == TraverseState.UNVISITED) {
+        currV.setVisit(TraverseState.VISITED);
+        visitor.apply(currV);
+        queue.addAll(currV.getNeighbors());
+      }
+
+    } while (!queue.isEmpty());
+  }
+
+  private void dfs(Vertex<E> v, GraphVisitor<E> visitor) {
+    v.setVisit(TraverseState.VISITED);
+    visitor.apply(v);
+
+    for (Vertex<E> e : v.getNeighbors()) {
+      if (e.getVisit() == TraverseState.UNVISITED) {
+        dfs(e, visitor);
+      }
+    }
+  }
+
+  private void markAllAs(TraverseState state) {
     for (Vertex<E> v : vertices) {
       v.setVisit(state);
     }

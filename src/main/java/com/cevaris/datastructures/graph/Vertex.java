@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Vertex<E> {
   private final E value;
   private final List<Vertex<E>> neighbors;
-  private VisitState visit = VisitState.UNVISITED;
+  private TraverseState visit = TraverseState.UNVISITED;
 
   public Vertex(E value) {
     this.value = value;
@@ -22,11 +22,11 @@ public class Vertex<E> {
     return neighbors;
   }
 
-  public VisitState getVisit() {
+  public TraverseState getVisit() {
     return visit;
   }
 
-  public void setVisit(VisitState visit) {
+  public void setVisit(TraverseState visit) {
     this.visit = visit;
   }
 

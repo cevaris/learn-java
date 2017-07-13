@@ -1,5 +1,5 @@
 package com.cevaris.datastructures.graph;
 
-public enum VisitState {
+public enum TraverseState {
   UNVISITED, VISITED
 }
