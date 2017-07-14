@@ -1,6 +1,7 @@
 package com.cevaris.datastructures.queues;
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,21 +10,14 @@ import com.cevaris.datastructures.lists.DoubleLinkList;
 import com.cevaris.datastructures.lists.Node;
 import com.cevaris.datastructures.lists.OpenLinkList;
 
-public class LinkedReorderableDeque<K> implements ReorderableDeque<K> {
+public class IndexedDeque<K> implements Deque<K> {
 
   private final DoubleLinkList<K> ls;
   private final Map<K, Node<K>> map;
 
-  public LinkedReorderableDeque(int capacity) {
+  public IndexedDeque(int capacity) {
     ls = new OpenLinkList<K>();
     map = new HashMap<>(capacity);
-  }
-
-  @Override
-  public void moveToLast(K k) {
-    Node<K> kToMove = map.get(k);
-    ls.removeNode(kToMove);
-    add(k);
   }
 
   @Override
@@ -140,7 +134,8 @@ public class LinkedReorderableDeque<K> implements ReorderableDeque<K> {
 
   @Override
   public boolean remove(Object o) {
-    return false;
+    Node<K> node = map.get(o);
+    return ls.removeNode(node);
   }
 
   @Override

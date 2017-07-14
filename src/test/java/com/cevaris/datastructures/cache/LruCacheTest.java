@@ -23,11 +23,11 @@ public class LruCacheTest {
   }
 
   @Test
-  public void testEvict() {
+  public void testRemove() {
     Cache<Long, Long> actual = new LruCache<>(2);
     actual.put(1L, 1L + 1L); // will be removed
     actual.put(2L, 2L + 2L);
-    actual.evict(1L);
+    actual.remove(1L);
 
 
     Map<Long, Long> expected = new HashMap<>();

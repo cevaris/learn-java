@@ -8,7 +8,7 @@ interface Cache<K, V> {
 
   V put(K k, V v);
 
-  V evict(K k);
+  V remove(K k);
 
   Set<Map.Entry<K, V>> entrySet();
 }
