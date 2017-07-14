@@ -2,19 +2,16 @@ package com.cevaris.datastructures.lists;
 
 import java.util.List;
 
-import com.cevaris.datastructures.lists.DoubleLinkList;
-import com.cevaris.datastructures.lists.Node;
-import com.cevaris.datastructures.lists.OpenDoubleLinkedList;
 import com.cevaris.test.utils.TestUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class OpenDoubleLinkedListTest {
+public class OpenLinkListTest {
 
   @Test
   public void testAddMany() {
-    DoubleLinkList<Integer> actual = new OpenDoubleLinkedList<>();
+    DoubleLinkList<Integer> actual = new OpenLinkList<>();
     List<Integer> expected = TestUtils.until(0, 10);
     actual.addAll(expected);
 
@@ -29,10 +26,9 @@ public class OpenDoubleLinkedListTest {
     Assert.assertEquals(expected.get(expected.size() - 1), actual.getNode(actual.size() - 1).getValue());
   }
 
-
   @Test
   public void testRemove() {
-    DoubleLinkList<Long> actual = new OpenDoubleLinkedList<>();
+    DoubleLinkList<Long> actual = new OpenLinkList<>();
     Assert.assertFalse(actual.remove(11L)); // remove on empty list
 
     List<Long> expected = TestUtils.until(0L, 5L);
@@ -43,7 +39,7 @@ public class OpenDoubleLinkedListTest {
     expected.remove(2L);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
-    // remove head
+    // remove first
     actual.remove(0L);
     expected.remove(0L);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
@@ -60,19 +56,19 @@ public class OpenDoubleLinkedListTest {
 
   @Test
   public void testAddBeforeAndAfter() {
-    DoubleLinkList<Integer> actual = new OpenDoubleLinkedList<>();
+    DoubleLinkList<Integer> actual = new OpenLinkList<>();
     List<Integer> expected = TestUtils.until(0, 3);
     actual.addAll(expected);
 
     ///////////
     // front
     expected.add(0, 10);
-    Node<Integer> head = actual.getFirstNode();
+    Node<Integer> head = actual.first();
     actual.addBefore(head, 10);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
     expected.add(1, 11);
-    head = actual.getFirstNode();
+    head = actual.first();
     actual.addAfter(head, 11);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
@@ -89,12 +85,12 @@ public class OpenDoubleLinkedListTest {
     ///////////
     // last
     expected.add(expected.size() - 1, 100);
-    Node<Integer> last = actual.getLastNode();
+    Node<Integer> last = actual.last();
     actual.addBefore(last, 100);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
 
     expected.add(101);
-    last = actual.getLastNode();
+    last = actual.last();
     actual.addAfter(last, 101);
     Assert.assertArrayEquals(expected.toArray(), actual.toArray());
   }

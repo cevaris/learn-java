@@ -65,15 +65,15 @@ public class SingleLinkListTest {
     // iterate all elemnts with not found
     Assert.assertEquals(false, ls.remove("charlie"));
 
-    //delete head
+    //remove first
     Assert.assertEquals(true, ls.remove("alpha"));
     Assert.assertArrayEquals(new Object[]{"beta", "gamma", "delta"}, ls.toArray());
 
-    //delete mid
+    //remove mid
     Assert.assertEquals(true, ls.remove("gamma"));
     Assert.assertArrayEquals(new Object[]{"beta", "delta"}, ls.toArray());
 
-    //delete last
+    //remove last
     Assert.assertEquals(true, ls.remove("delta"));
     Assert.assertArrayEquals(new Object[]{"beta"}, ls.toArray());
   }

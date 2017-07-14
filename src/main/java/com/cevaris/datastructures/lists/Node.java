@@ -1,7 +1,7 @@
 package com.cevaris.datastructures.lists;
 
 
-class Node<E> {
+public class Node<E> {
   private Node<E> prev;
   private Node<E> next;
   private final E value;
