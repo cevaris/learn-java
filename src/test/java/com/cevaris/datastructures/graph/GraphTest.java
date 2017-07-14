@@ -7,7 +7,7 @@ import com.cevaris.test.utils.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class GraphTest {
+public class GraphTest extends GraphSpec {
 
   private GraphBuilder<Integer> graphBuilder = new GraphBuilder<Integer>()
       .withEdges(edge(0, 1), edge(0, 2), edge(1, 2), edge(2, 0), edge(2, 3), edge(3, 3));
@@ -75,10 +75,6 @@ public class GraphTest {
 
     expected = TestUtils.newList(3, 2, 0, 1);
     Assert.assertArrayEquals(expected.toArray(), undirected.toArray(VisitOrder.BFS, 3));
-  }
-
-  private Edge<Integer> edge(Integer from, Integer to) {
-    return new Edge<>(from, to);
   }
 
 }

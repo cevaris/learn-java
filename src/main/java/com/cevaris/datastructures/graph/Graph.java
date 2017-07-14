@@ -1,7 +1,7 @@
 package com.cevaris.datastructures.graph;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 
 interface Graph<E> {
@@ -20,35 +19,12 @@ interface Graph<E> {
   int size();
 
   boolean isEmpty();
+
+  Graph<E> copy();
 }
 
 enum VisitOrder {
   DFS, BFS
-}
-
-class GraphBuilder<E extends Comparable<E>> {
-  private List<Edge<E>> ls = new ArrayList<>();
-
-  @SafeVarargs
-  final GraphBuilder<E> withEdges(Edge<E>... ls) {
-    this.ls = new ArrayList<>(Arrays.asList(ls));
-    return this;
-  }
-
-  Graph<E> buildDirected() {
-    return build(new DirectedGraph<>());
-  }
-
-  Graph<E> buildUndirected() {
-    return build(new UndirectedGraph<>());
-  }
-
-  private Graph<E> build(Graph<E> g) {
-    for (Edge<E> e : ls) {
-      g.addEdge(e.getFrom(), e.getTo());
-    }
-    return g;
-  }
 }
 
 abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
@@ -80,6 +56,18 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
     return arr.toArray();
   }
 
+  protected Graph<E> copy(Graph<E> g) {
+    if (isEmpty()) {
+      return g;
+    }
+
+    CloneVisitor<E> visitor = new CloneVisitor<>(g);
+    markAllAs(TraverseState.UNVISITED);
+    bfs(vertices.getFirst(), visitor);
+
+    return visitor.toGraph();
+  }
+
   protected Vertex<E> addVertex(E e) {
     Vertex<E> v = lookup.computeIfAbsent(e, Vertex::new);
     vertices.add(v);
@@ -108,7 +96,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
   }
 
   private void bfs(Vertex<E> v, GraphVisitor<E> visitor) {
-    Queue<Vertex<E>> queue = new ArrayBlockingQueue<>(size());
+    Queue<Vertex<E>> queue = new ArrayDeque<>(size());
     queue.add(v);
 
     do {
@@ -119,7 +107,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
       Vertex<E> currV = queue.poll();
 
       if (currV.getVisit() == TraverseState.UNVISITED) {
-        currV.setVisit(TraverseState.VISITED);
+        currV.setVisitAs(TraverseState.VISITED);
         visitor.apply(currV);
         queue.addAll(currV.getNeighbors());
       }
@@ -132,7 +120,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
       return;
     }
 
-    v.setVisit(TraverseState.VISITED);
+    v.setVisitAs(TraverseState.VISITED);
     visitor.apply(v);
 
     for (Vertex<E> e : v.getNeighbors()) {
@@ -144,7 +132,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
 
   private void markAllAs(TraverseState state) {
     for (Vertex<E> v : vertices) {
-      v.setVisit(state);
+      v.setVisitAs(state);
     }
   }
 }
@@ -155,9 +143,14 @@ class DirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
   public void addEdge(E from, E to) {
     Vertex<E> vertexFrom = addVertex(from);
     Vertex<E> vertexTo = addVertex(to);
+
     vertexFrom.addNeighbor(vertexTo);
   }
 
+  @Override
+  public Graph<E> copy() {
+    return copy(new DirectedGraph<>());
+  }
 }
 
 class UndirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
@@ -169,6 +162,11 @@ class UndirectedGraph<E extends Comparable<E>> extends AbstractGraph<E> {
 
     vertexFrom.addNeighbor(vertexTo);
     vertexTo.addNeighbor(vertexFrom);
+  }
+
+  @Override
+  public Graph<E> copy() {
+    return copy(new UndirectedGraph<>());
   }
 
 }

@@ -30,16 +30,12 @@ public class Vertex<E extends Comparable<E>> implements Comparable<Vertex<E>> {
     return visit;
   }
 
-  void setVisit(TraverseState visit) {
+  void setVisitAs(TraverseState visit) {
     this.visit = visit;
   }
 
   void addNeighbor(Vertex<E> to) {
     neighbors.add(to);
-  }
-
-  int numOfNeighbors() {
-    return neighbors.size();
   }
 
   @Override
