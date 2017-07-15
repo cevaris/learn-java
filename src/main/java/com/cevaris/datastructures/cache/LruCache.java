@@ -1,51 +1,61 @@
 package com.cevaris.datastructures.cache;
 
 
-import java.util.Deque;
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.cevaris.datastructures.queues.IndexedDeque;
+import com.cevaris.datastructures.lists.DoubleLinkList;
+import com.cevaris.datastructures.lists.Node;
+import com.cevaris.datastructures.lists.OpenLinkList;
 
 public class LruCache<K, V> implements Cache<K, V> {
 
   private final int capacity;
-  private final Map<K, V> map;
-  private final Deque<K> insertionList;
+  private final Map<K, Node<Map.Entry<K, V>>> map;
+  private final DoubleLinkList<Map.Entry<K, V>> orderLs;
 
   public LruCache(int capacity) {
     this.capacity = capacity;
     map = new HashMap<>(capacity);
-    insertionList = new IndexedDeque<>(capacity);
+    orderLs = new OpenLinkList<>();
   }
 
   @Override
   public V get(K k) {
-    insertionList.remove(k);
-    insertionList.add(k);
-    return map.get(k);
+    Node<Map.Entry<K, V>> node = map.get(k);
+    orderLs.removeNode(node);
+    orderLs.add(node.getValue());
+    return node.getValue().getValue();
   }
 
   @Override
   public V put(K k, V v) {
     if (map.size() >= capacity) {
-      K leastUsedKey = insertionList.pop();
-      map.remove(leastUsedKey);
+      Map.Entry<K, V> entry = orderLs.pop();
+      map.remove(entry.getKey());
     }
 
-    insertionList.add(k);
-    return map.put(k, v);
+    Node<Map.Entry<K, V>> entryNode = orderLs.addNode(new AbstractMap.SimpleEntry<>(k, v));
+    map.put(k, entryNode);
+    return v;
   }
 
   @Override
   public V remove(K k) {
-    insertionList.remove(k);
-    return map.remove(k);
+    Node<Map.Entry<K, V>> entryNode = map.remove(k);
+    orderLs.removeNode(entryNode);
+    return entryNode.getValue().getValue();
   }
 
   @Override
   public Set<Map.Entry<K, V>> entrySet() {
-    return map.entrySet();
+    Set<Map.Entry<K, V>> set = new HashSet<>();
+    for (Node<Map.Entry<K, V>> node : map.values()) {
+      set.add(node.getValue());
+    }
+    return set;
   }
 }
