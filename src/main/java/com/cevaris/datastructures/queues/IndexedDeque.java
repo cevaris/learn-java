@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.cevaris.datastructures.lists.DoubleLinkList;
-import com.cevaris.datastructures.lists.Node;
 import com.cevaris.datastructures.lists.OpenLinkList;
+import com.cevaris.datastructures.lists.Node;
+import com.cevaris.datastructures.lists.DoubleLinkList;
 
 public class IndexedDeque<K> implements Deque<K> {
 
-  private final DoubleLinkList<K> ls;
+  private final OpenLinkList<K> ls;
   private final Map<K, Node<K>> map;
 
   public IndexedDeque(int capacity) {
-    ls = new OpenLinkList<K>();
+    ls = new DoubleLinkList<K>();
     map = new HashMap<>(capacity);
   }
 

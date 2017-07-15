@@ -15,12 +15,12 @@ public class LruCache<K, V> implements Cache<K, V> {
 
   private final int capacity;
   private final Map<K, Node<Map.Entry<K, V>>> map;
-  private final DoubleLinkList<Map.Entry<K, V>> orderLs;
+  private final OpenLinkList<Map.Entry<K, V>> orderLs;
 
   public LruCache(int capacity) {
     this.capacity = capacity;
     map = new HashMap<>(capacity);
-    orderLs = new OpenLinkList<>();
+    orderLs = new DoubleLinkList<>();
   }
 
   @Override

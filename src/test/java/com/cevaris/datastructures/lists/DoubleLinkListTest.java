@@ -7,11 +7,11 @@ import com.cevaris.test.utils.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class OpenLinkListTest {
+public class DoubleLinkListTest {
 
   @Test
   public void testAddMany() {
-    DoubleLinkList<Integer> actual = new OpenLinkList<>();
+    OpenLinkList<Integer> actual = new DoubleLinkList<>();
     List<Integer> expected = TestUtils.until(0, 10);
     actual.addAll(expected);
 
@@ -28,7 +28,7 @@ public class OpenLinkListTest {
 
   @Test
   public void testRemove() {
-    DoubleLinkList<Long> actual = new OpenLinkList<>();
+    OpenLinkList<Long> actual = new DoubleLinkList<>();
     Assert.assertFalse(actual.remove(11L)); // remove on empty list
 
     List<Long> expected = TestUtils.until(0L, 5L);
@@ -56,7 +56,7 @@ public class OpenLinkListTest {
 
   @Test
   public void testAddBeforeAndAfter() {
-    DoubleLinkList<Integer> actual = new OpenLinkList<>();
+    OpenLinkList<Integer> actual = new DoubleLinkList<>();
     List<Integer> expected = TestUtils.until(0, 3);
     actual.addAll(expected);
 
