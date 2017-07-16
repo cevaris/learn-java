@@ -31,4 +31,18 @@ public class TestUtils {
     }
   }
 
+  public static ArrayList<ArrayList<Integer>> buildMatrix(int c, int r) {
+    int counter = 0;
+    ArrayList<ArrayList<Integer>> result = new ArrayList<>(r);
+    for (int ri = 0; ri < r; ri++) {
+      for (int ci = 0; ci < c; ci++) {
+        if (result.size() <= ri) {
+          result.add(new ArrayList<>(ci));
+        }
+        result.get(ri).add(counter++);
+      }
+    }
+    return result;
+  }
+
 }
