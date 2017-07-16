@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.arrayLeftRotation;
+package com.cevaris.hackerrank.array_left_rotation;
 
 
 import java.util.Scanner;

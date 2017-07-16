@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.dynamicArray;
+package com.cevaris.hackerrank.dynamic_array;
 
 import java.util.ArrayList;
 import java.util.List;

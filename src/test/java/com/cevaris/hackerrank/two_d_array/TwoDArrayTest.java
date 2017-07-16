@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.twoDArray;
+package com.cevaris.hackerrank.two_d_array;
 
 import com.cevaris.test.utils.HackerRankTest;
 

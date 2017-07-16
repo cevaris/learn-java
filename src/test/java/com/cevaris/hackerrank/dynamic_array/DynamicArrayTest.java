@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.dynamicArray;
+package com.cevaris.hackerrank.dynamic_array;
 
 import com.cevaris.test.utils.HackerRankTest;
 

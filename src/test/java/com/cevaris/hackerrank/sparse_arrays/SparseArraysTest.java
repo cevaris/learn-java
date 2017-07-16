@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.sparseArrays;
+package com.cevaris.hackerrank.sparse_arrays;
 
 import com.cevaris.test.utils.HackerRankTest;
 
