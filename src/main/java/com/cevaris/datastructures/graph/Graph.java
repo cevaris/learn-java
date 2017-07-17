@@ -94,10 +94,6 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
     queue.add(v);
 
     do {
-      if (visitor.state() == VisitorState.RETURN) {
-        return;
-      }
-
       Vertex<E> currV = queue.poll();
 
       if (currV.getVisit() == TraverseState.UNVISITED) {
@@ -105,7 +101,6 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
         visitor.apply(currV);
         queue.addAll(currV.getNeighbors());
       }
-
     } while (!queue.isEmpty());
   }
 
