@@ -7,16 +7,6 @@ interface Sorter<E> {
   List<E> sort(List<E> arr);
 }
 
-public class Sorts<E extends Comparable<E>> {
-
-  private final InsertionSort<E> insertionSort = new InsertionSort<E>();
-
-  public List<E> insertionSort(List<E> arr) {
-    return insertionSort.sort(arr);
-  }
-
-}
-
 class InsertionSort<E extends Comparable<E>> implements Sorter<E> {
   @Override
   public List<E> sort(List<E> arr) {
@@ -25,6 +15,13 @@ class InsertionSort<E extends Comparable<E>> implements Sorter<E> {
         Collections.swap(arr, k, k - 1);
       }
     }
+    return arr;
+  }
+}
+
+class MergeSort<E extends Comparable<E>> implements Sorter<E> {
+  @Override
+  public List<E> sort(List<E> arr) {
     return arr;
   }
 }

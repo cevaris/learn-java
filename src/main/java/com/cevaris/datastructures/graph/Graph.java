@@ -3,12 +3,10 @@ package com.cevaris.datastructures.graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 
 interface Graph<E> {
@@ -28,12 +26,10 @@ enum VisitOrder {
 }
 
 abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
-  private final LinkedList<Vertex<E>> vertices;
-  private final Map<E, Vertex<E>> lookup;
+  private final ConcurrentSkipListMap<E, Vertex<E>> lookup;
 
   AbstractGraph() {
-    vertices = new LinkedList<>();
-    lookup = new HashMap<>();
+    lookup = new ConcurrentSkipListMap<>();
   }
 
   @Override
@@ -43,7 +39,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
 
   @Override
   public int size() {
-    return vertices.size();
+    return lookup.size();
   }
 
   @Override
@@ -63,15 +59,13 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
 
     CloneVisitor<E> visitor = new CloneVisitor<>(g);
     markAllAs(TraverseState.UNVISITED);
-    bfs(vertices.getFirst(), visitor);
+    bfs(lookup.firstEntry().getValue(), visitor);
 
     return visitor.toGraph();
   }
 
   protected Vertex<E> addVertex(E e) {
-    Vertex<E> v = lookup.computeIfAbsent(e, Vertex::new);
-    vertices.add(v);
-    return v;
+    return lookup.computeIfAbsent(e, Vertex::new);
   }
 
   private Iterator<E> iterator(VisitOrder order, E e) {
@@ -131,7 +125,7 @@ abstract class AbstractGraph<E extends Comparable<E>> implements Graph<E> {
   }
 
   private void markAllAs(TraverseState state) {
-    for (Vertex<E> v : vertices) {
+    for (Vertex<E> v : lookup.values()) {
       v.setVisitAs(state);
     }
   }
