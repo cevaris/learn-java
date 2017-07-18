@@ -15,8 +15,9 @@ public class FibTest {
   public void testMemoizedFib() {
     Fibonacci f = new MemoizedFib();
     assertFib(f);
-    Assert.assertEquals(12586269025L, f.fib(49));
-    Assert.assertEquals(20365011074L, f.fib(50));
+    Assert.assertEquals(7778742049L, f.fib(49));
+    Assert.assertEquals(12586269025L, f.fib(50));
+    Assert.assertEquals(7540113804746346429L, f.fib(92));
   }
 
   @Test
@@ -39,9 +40,11 @@ public class FibTest {
     }
 
     Assert.assertEquals(1, f.fib(1));
-    Assert.assertEquals(3, f.fib(3));
-    Assert.assertEquals(46368, f.fib(23));
-    Assert.assertEquals(9227465, f.fib(34));
+    Assert.assertEquals(1, f.fib(2));
+    Assert.assertEquals(2, f.fib(3));
+    Assert.assertEquals(3, f.fib(4));
+    Assert.assertEquals(28657, f.fib(23));
+    Assert.assertEquals(5702887, f.fib(34));
   }
 
 }
