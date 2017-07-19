@@ -9,6 +9,19 @@ import java.util.Set;
 class SumOfTriplets {
 
   static List<Set<Integer>> findTriplets(List<Integer> ls) {
+    return findTriplets(ls, 0);
+  }
+
+
+  /**
+   * a + b + c = t
+   * a = t - b - c
+   * a = t - (b  + c)
+   *
+   * @param ls list of possible sums
+   * @param targetSum target sum
+   */
+  static List<Set<Integer>> findTriplets(List<Integer> ls, int targetSum) {
     if (ls.size() < 3) throw new IllegalArgumentException("list must be >= 3 in size");
 
     ArrayList<Set<Integer>> results = new ArrayList<>();
@@ -17,7 +30,7 @@ class SumOfTriplets {
       Set<Integer> toLookFor = new HashSet<>();
       for (int j = i + 1; j < ls.size(); j++) {
 
-        int x = -(ls.get(i) + ls.get(j));
+        int x = targetSum - (ls.get(i) + ls.get(j));
         if (toLookFor.contains(x)) {
           results.add(new HashSet<>(Arrays.asList(x, ls.get(i), ls.get(j))));
         } else {

@@ -1,6 +1,5 @@
 package com.cevaris.problems.sum_of_triplets;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ public class SumOfTripletsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testLessThanTree() {
-    List<Set<Integer>> expected = new ArrayList<Set<Integer>>();
     List<Integer> data = TestUtils.newList(0, 1);
     SumOfTriplets.findTriplets(data);
   }
@@ -52,4 +50,15 @@ public class SumOfTripletsTest {
     List<Integer> data = TestUtils.newList(1, 2, 3);
     Assert.assertArrayEquals(expected.toArray(), SumOfTriplets.findTriplets(data).toArray());
   }
+
+  @Test
+  public void testCase3() {
+    List<Set<Integer>> expected = TestUtils.newList(
+        new HashSet<>(Arrays.asList(4, 10, 8))
+    );
+    List<Integer> data = TestUtils.newList(1, 4, 45, 6, 10, 8);
+    int targetSum = 22;
+    Assert.assertArrayEquals(expected.toArray(), SumOfTriplets.findTriplets(data, targetSum).toArray());
+  }
+
 }
