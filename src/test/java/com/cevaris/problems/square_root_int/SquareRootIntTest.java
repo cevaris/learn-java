@@ -1,4 +1,4 @@
-package com.cevaris.interviewbit.square_root_int;
+package com.cevaris.problems.square_root_int;
 
 import java.util.List;
 

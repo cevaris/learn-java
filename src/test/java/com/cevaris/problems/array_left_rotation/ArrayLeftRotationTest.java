@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.array_left_rotation;
+package com.cevaris.problems.array_left_rotation;
 
 import com.cevaris.test.utils.HackerRankTest;
 

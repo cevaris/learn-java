@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.algo_crush;
+package com.cevaris.problems.algo_crush;
 
 import java.util.Arrays;
 import java.util.Scanner;

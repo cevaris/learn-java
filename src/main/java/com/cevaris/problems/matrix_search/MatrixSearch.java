@@ -1,4 +1,4 @@
-package com.cevaris.interviewbit.square_root_int.matrix_search;
+package com.cevaris.problems.matrix_search;
 
 import java.util.ArrayList;
 

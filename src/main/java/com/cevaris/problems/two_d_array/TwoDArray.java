@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.two_d_array;
+package com.cevaris.problems.two_d_array;
 
 import java.util.Scanner;
 

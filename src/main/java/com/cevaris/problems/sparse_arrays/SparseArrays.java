@@ -1,4 +1,4 @@
-package com.cevaris.hackerrank.sparse_arrays;
+package com.cevaris.problems.sparse_arrays;
 
 import java.util.ArrayList;
 import java.util.HashMap;
