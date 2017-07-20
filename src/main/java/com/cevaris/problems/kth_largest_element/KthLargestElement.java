@@ -1,11 +1,11 @@
-package com.cevaris.problems.nth_largest_element;
+package com.cevaris.problems.kth_largest_element;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class NthLargestElement {
+public class KthLargestElement {
 
   static Integer priorityQueue(int k, List<Integer> ls) {
     if (ls == null) return -1;
@@ -21,7 +21,7 @@ public class NthLargestElement {
         }
         queue.poll();
       }
-      
+
       queue.offer(x);
     }
 
