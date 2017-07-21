@@ -36,10 +36,6 @@ public class KthLargestElement {
     return ls.get(ls.size() - 1 - k);
   }
 
-  static Integer skipList(int k, List<Integer> ls) {
-    return 0;
-  }
-
   static Integer awesomeNTime(int k, List<Integer> ls) {
     return 0;
   }
