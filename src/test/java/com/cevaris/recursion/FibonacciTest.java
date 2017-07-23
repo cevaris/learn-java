@@ -45,7 +45,7 @@ public class FibonacciTest {
     }
 
     try {
-      Assert.assertEquals(0, f.fib(Integer.MIN_VALUE));
+    Assert.assertEquals(0, f.fib(Integer.MIN_VALUE));
       Assert.fail();
     } catch (IllegalArgumentException e) {
     }
