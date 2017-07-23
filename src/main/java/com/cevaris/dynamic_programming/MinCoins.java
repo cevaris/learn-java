@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class MinCoins {
 
-  static int sentinel = Integer.MAX_VALUE;
+  static int MaxInt = Integer.MAX_VALUE;
 
   static int calculate(Set<Integer> coins, int T) {
 
@@ -17,14 +17,14 @@ public class MinCoins {
     if (coins == null || coins.isEmpty()) throw new IllegalArgumentException();
 
     int[] t = new int[T + 1];
-    Arrays.fill(t, sentinel);
+    Arrays.fill(t, MaxInt);
     t[0] = 0;
 
     for (int i = 1; i <= T; i++) {
       List<Integer> tmp = new ArrayList<>();
 
       for (Integer c : coins) {
-        if (c <= i) {
+        if (c <= i && t[i - c] != MaxInt) {
           tmp.add(t[i - c]);
         }
       }
@@ -34,7 +34,7 @@ public class MinCoins {
       }
     }
 
-    if (t[T] == sentinel) {
+    if (t[T] == MaxInt) {
       return -1;
     } else {
       return t[T];
