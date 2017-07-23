@@ -1,4 +1,4 @@
-package com.cevaris.dynamic_programming.cut_rod;
+package com.cevaris.dynamic_programming;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,19 +10,19 @@ public class CutRodMaxValueTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNull() {
-    new CutRodMaxValue().calculateMaxValue(null, 1);
+    CutRodMaxValue.calculate(null, 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmpty() {
-    new CutRodMaxValue().calculateMaxValue(new HashMap<>(), 1);
+    CutRodMaxValue.calculate(new HashMap<>(), 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testSingleArg() {
     HashMap<Integer, Integer> lenPrice = new HashMap<>();
     lenPrice.put(1, 1);
-    new CutRodMaxValue().calculateMaxValue(lenPrice, 1);
+    CutRodMaxValue.calculate(lenPrice, 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -30,7 +30,7 @@ public class CutRodMaxValueTest {
     HashMap<Integer, Integer> lenPrice = new HashMap<>();
     lenPrice.put(1, 1);
     lenPrice.put(2, 1);
-    new CutRodMaxValue().calculateMaxValue(lenPrice, 5);
+    CutRodMaxValue.calculate(lenPrice, 5);
   }
 
   @Test
@@ -42,7 +42,7 @@ public class CutRodMaxValueTest {
     lenPrices.put(4, 5);
 
     CutRodMaxValue test = new CutRodMaxValue();
-    Assert.assertEquals(6, test.calculateMaxValue(lenPrices, 4));
+    Assert.assertEquals(6, CutRodMaxValue.calculate(lenPrices, 4));
   }
 
   @Test
@@ -58,7 +58,7 @@ public class CutRodMaxValueTest {
     lenPrices.put(8, 20);
 
     CutRodMaxValue test = new CutRodMaxValue();
-    Assert.assertEquals(22, test.calculateMaxValue(lenPrices, 8));
+    Assert.assertEquals(22, CutRodMaxValue.calculate(lenPrices, 8));
   }
 
 }

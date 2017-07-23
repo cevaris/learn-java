@@ -1,12 +1,12 @@
-package com.cevaris.dynamic_programming.cut_rod;
+package com.cevaris.dynamic_programming;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CutRodMaxValue {
-  int calculateMaxValue(Map<Integer, Integer> lenPrice, int L) {
+class CutRodMaxValue {
+  static int calculate(Map<Integer, Integer> lenPrice, int L) {
     if (lenPrice == null)
       throw new IllegalArgumentException("lenPrice cannot be null");
     if (lenPrice.size() < 2)
