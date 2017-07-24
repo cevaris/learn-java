@@ -1,6 +1,6 @@
 package com.cevaris.dynamic_programming;
 
-public class LongestCommonSubSeq {
+class LongestCommonSubSeq {
 
   static String calculate(String A, String B) {
     if (A == null || B == null) throw new IllegalArgumentException();
@@ -19,7 +19,7 @@ public class LongestCommonSubSeq {
 
         if (isMatch) {
           Integer diagonalValue = diagonal(t, r, c);
-          if (diagonalValue != null) {
+          if (diagonalValue != -1) {
             t[r][c] = 1 + diagonalValue;
           } else {
             t[r][c] = 1;
@@ -28,11 +28,11 @@ public class LongestCommonSubSeq {
           Integer upValue = up(t, r, c);
           Integer leftValue = left(t, r, c);
 
-          if (upValue != null && leftValue != null) {
+          if (upValue != -1 && leftValue != -1) {
             t[r][c] = Math.max(upValue, leftValue);
-          } else if (upValue != null) {
+          } else if (upValue != -1) {
             t[r][c] = upValue;
-          } else if (leftValue != null) {
+          } else if (leftValue != -1) {
             t[r][c] = leftValue;
           }
         }
@@ -47,22 +47,18 @@ public class LongestCommonSubSeq {
     int r = R.length - 1;
     int c = C.length - 1;
 
-    while (r > 0 && c > 0) {
-      Integer currValue = t[r][c];
-      Integer diagonalValue = diagonal(t, r, c);
-
-      if (currValue.equals(diagonalValue + 1)) {
+    while (r >= 0 && c >= 0) {
+      if (R[r] == C[c]) {
         builder.append(R[r]);
         c--;
         r--;
       } else {
-
         Integer upValue = up(t, r, c);
         Integer leftValue = left(t, r, c);
         Integer upOrLeft = Math.max(leftValue, upValue);
         if (upOrLeft.equals(upValue)) {
           r--;
-        } else if (upOrLeft.equals(leftValue)) {
+        } else {
           c--;
         }
       }
@@ -74,21 +70,21 @@ public class LongestCommonSubSeq {
 
   private static Integer up(int[][] t, int r, int c) {
     if (r <= 0)
-      return null;
+      return -1;
     else
       return t[r - 1][c];
   }
 
   private static Integer left(int[][] t, int r, int c) {
     if (c <= 0)
-      return null;
+      return -1;
     else
       return t[r][c - 1];
   }
 
   private static Integer diagonal(int[][] t, int r, int c) {
     if (r <= 0 || c <= 0)
-      return null;
+      return -1;
     else
       return t[r - 1][c - 1];
   }
