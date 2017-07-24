@@ -13,8 +13,8 @@ public class LongestCommonSubSeq {
     int[][] t = new int[R.length][C.length];
 
     // creates table
-    for (int c = 0; c < C.length; c++) {
-      for (int r = 0; r < R.length; r++) {
+    for (int r = 0; r < R.length; r++) {
+      for (int c = 0; c < C.length; c++) {
         boolean isMatch = R[r] == C[c];
 
         if (isMatch) {
@@ -47,46 +47,47 @@ public class LongestCommonSubSeq {
     int r = R.length - 1;
     int c = C.length - 1;
 
-    while (up(t, r, c) != null && left(t, r, c) != null && diagonal(t, r, c) != null) {
+    while (r > 0 && c > 0) {
       Integer currValue = t[r][c];
-      Integer upValue = up(t, r, c);
-      Integer leftValue = left(t, r, c);
+      Integer diagonalValue = diagonal(t, r, c);
 
-      boolean matchLeftOrUp = !currValue.equals(upValue) || !currValue.equals(leftValue);
-      if (!matchLeftOrUp) {
-        builder.insert(0, R[r]);
-        r--;
+      if (currValue.equals(diagonalValue + 1)) {
+        builder.append(R[r]);
         c--;
+        r--;
       } else {
-        if (currValue.equals(leftValue)) {
-          c--;
-        } else if (currValue.equals(upValue)) {
+
+        Integer upValue = up(t, r, c);
+        Integer leftValue = left(t, r, c);
+        Integer upOrLeft = Math.max(leftValue, upValue);
+        if (upOrLeft.equals(upValue)) {
           r--;
-        } else {
-          break;
+        } else if (upOrLeft.equals(leftValue)) {
+          c--;
         }
       }
+
     }
 
-    return builder.toString().toCharArray();
+    return builder.reverse().toString().toCharArray();
   }
 
   private static Integer up(int[][] t, int r, int c) {
-    if (r == 0)
+    if (r <= 0)
       return null;
     else
       return t[r - 1][c];
   }
 
   private static Integer left(int[][] t, int r, int c) {
-    if (c == 0)
+    if (c <= 0)
       return null;
     else
       return t[r][c - 1];
   }
 
   private static Integer diagonal(int[][] t, int r, int c) {
-    if (r == 0 || c == 0)
+    if (r <= 0 || c <= 0)
       return null;
     else
       return t[r - 1][c - 1];

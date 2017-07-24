@@ -23,6 +23,7 @@ public class LongestCommonSubSeqTest {
 
   @Test()
   public void testCase0() {
-    Assert.assertEquals("BDF", LongestCommonSubSeq.calculate("CBDF", "BDFG"));
+    Assert.assertEquals("BDF", LongestCommonSubSeq.calculate("BDFG", "CBDF"));
+    Assert.assertEquals("BDF",   LongestCommonSubSeq.calculate("CBDF", "BDFG"));
   }
 }
