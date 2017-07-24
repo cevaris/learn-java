@@ -18,15 +18,15 @@ class LongestCommonSubSeq {
         boolean isMatch = R[r] == C[c];
 
         if (isMatch) {
-          Integer diagonalValue = diagonal(t, r, c);
+          int diagonalValue = diagonal(t, r, c);
           if (diagonalValue != -1) {
             t[r][c] = 1 + diagonalValue;
           } else {
             t[r][c] = 1;
           }
         } else {
-          Integer upValue = up(t, r, c);
-          Integer leftValue = left(t, r, c);
+          int upValue = up(t, r, c);
+          int leftValue = left(t, r, c);
 
           if (upValue != -1 && leftValue != -1) {
             t[r][c] = Math.max(upValue, leftValue);
@@ -53,10 +53,10 @@ class LongestCommonSubSeq {
         c--;
         r--;
       } else {
-        Integer upValue = up(t, r, c);
-        Integer leftValue = left(t, r, c);
-        Integer upOrLeft = Math.max(leftValue, upValue);
-        if (upOrLeft.equals(upValue)) {
+        int upValue = up(t, r, c);
+        int leftValue = left(t, r, c);
+        int upOrLeft = Math.max(leftValue, upValue);
+        if (upOrLeft == upValue) {
           r--;
         } else {
           c--;
@@ -68,21 +68,21 @@ class LongestCommonSubSeq {
     return builder.reverse().toString().toCharArray();
   }
 
-  private static Integer up(int[][] t, int r, int c) {
+  private static int up(int[][] t, int r, int c) {
     if (r <= 0)
       return -1;
     else
       return t[r - 1][c];
   }
 
-  private static Integer left(int[][] t, int r, int c) {
+  private static int left(int[][] t, int r, int c) {
     if (c <= 0)
       return -1;
     else
       return t[r][c - 1];
   }
 
-  private static Integer diagonal(int[][] t, int r, int c) {
+  private static int diagonal(int[][] t, int r, int c) {
     if (r <= 0 || c <= 0)
       return -1;
     else
