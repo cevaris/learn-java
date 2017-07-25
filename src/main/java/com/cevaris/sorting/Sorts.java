@@ -2,7 +2,9 @@ package com.cevaris.sorting;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 interface Sorts<E> {
   List<E> sort(List<E> ls);
@@ -16,6 +18,43 @@ class InsertionSort<E extends Comparable<E>> implements Sorts<E> {
         Collections.swap(ls, k, k - 1);
       }
     }
+    return ls;
+  }
+}
+
+class RadixSort implements Sorts<Integer> {
+  @Override
+  public List<Integer> sort(List<Integer> ls) {
+    if (ls == null) throw new IllegalArgumentException();
+    if (ls.size() < 2) return ls;
+
+    int N = ls.size();
+    List<Queue<Integer>> r = new ArrayList<>(10);
+    for (int i = 0; i < 10; i++) {
+      r.add(new LinkedList<>());
+    }
+
+    int m = 10;
+    int d = 1;
+    boolean stop = false;
+    while (!stop) {
+      for (int i = 0; i < N; i++) {
+        int bucket = (ls.get(i) % m) / d;
+        r.get(bucket).add(ls.get(i));
+      }
+
+      m *= 10;
+      d *= 10;
+
+      stop = r.get(0).size() == N;
+
+      for (int i = 0, j = 0; i < 10; i++) {
+        while (!r.get(i).isEmpty()) {
+          ls.set(j++, r.get(i).remove());
+        }
+      }
+    }
+
     return ls;
   }
 }

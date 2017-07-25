@@ -40,6 +40,12 @@ public class SortsTest {
     assertLists(sorts);
   }
 
+  @Test
+  public void testRadixSort() {
+    Sorts<Integer> sorts = new RadixSort();
+    assertLists(sorts);
+  }
+  
   private void assertLists(Sorts<Integer> sorts) {
     Assert.assertArrayEquals(empty.toArray(), sorts.sort(empty).toArray());
     Assert.assertArrayEquals(singleton.toArray(), sorts.sort(singleton).toArray());
